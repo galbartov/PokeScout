@@ -80,13 +80,12 @@ function Step2Mockup() {
         borderRadius: 8, marginBottom: 8, overflow: 'hidden',
         border: '1px solid rgba(245,183,49,0.2)',
         background: '#1a1a3e',
-        display: 'flex', justifyContent: 'center',
       }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/pikachu-ex-276.jpg"
           alt="Pikachu ex 276/217"
-          style={{ width: '70%', display: 'block' }}
+          style={{ width: '100%', display: 'block' }}
         />
       </div>
       <div style={{
