@@ -1,0 +1,84 @@
+{
+  "welcome": "Hello! Welcome to PokeScout!\nI'll help you find deals on Pokémon cards and sealed products on eBay.",
+  "onboarding_browse": "*Welcome to PokeScout!*\n\nThe easiest way to get started:\n\n/browse — explore single cards by series and set\n/sealed — browse ETBs and booster boxes\n\nTap *Alert me* on any product and I'll notify you the moment a deal appears on eBay below your price!\n\nUseful commands:\n/browse – Single cards\n/sealed – Sealed products\n/preferences – Manage alerts\n/status – Subscription status\n/help – Help",
+
+  "choose_categories": "What are you looking for? Pick categories (multiple allowed):",
+  "category_sealed": "Sealed products",
+  "category_singles": "Single cards",
+  "category_graded": "Graded cards",
+  "category_bulk": "Bulk / lots",
+  "categories_selected": "Categories selected: {categories}",
+
+  "enter_product_search": "Search for a specific product (card name, ETB, booster box, ...) or press /skip:",
+  "product_search_results": "I found the following products:\n\n{results}\n\nPick a number, or type /skip to use keyword matching:",
+  "product_selected": "Saved: {name}",
+  "product_not_found": "No matching products found. Try a different name, or press /skip.",
+  "product_search_skipped": "Skipping specific product search.",
+
+  "choose_preset": "Pick a quick preset, or configure manually:",
+  "preset_selected": "{name} selected! Now set your max price or press /skip:",
+  "preset_custom": "Custom / Manual",
+  "preset_skip": "No preset",
+
+  "enter_keywords": "Enter search keywords (comma-separated), or press /skip:\nExample: charizard, etb, 151",
+  "keywords_saved": "Keywords saved.",
+  "keywords_skipped": "No keywords.",
+
+  "enter_price_range": "Price range (USD):",
+  "price_any": "Any price",
+  "price_up_to_25": "Up to $25",
+  "price_up_to_50": "Up to $50",
+  "price_up_to_100": "Up to $100",
+  "price_up_to_250": "Up to $250",
+  "price_custom": "Custom",
+  "enter_price_min": "Enter minimum price ($), or 0 for no limit:",
+  "enter_price_max": "Enter maximum price ($), or 0 for no limit:",
+  "price_range_saved": "Price range: ${min} – ${max}",
+
+  "preference_saved": "Preference \"{name}\" saved!\nNow scanning eBay for deals. {free_left} free alerts remaining.",
+  "enter_preference_name": "Give this preference a name (e.g. \"Charizard ex SIR\" or \"SV 151 ETB\"):",
+
+  "deal_found": "*New deal found!*\n\n{title}\n${price}\n{platform_name}\n\n{url}\n\nYour alert: _{preference_name}_",
+  "deal_found_no_location": "*New deal found!*\n\n{title}\n${price}\n{platform_name}\n\n{url}\n\nYour alert: _{preference_name}_",
+
+  "free_deals_exhausted": "You've used all 10 free alerts.\nSubscribe for unlimited alerts at $9.99/month:\n{checkout_url}",
+
+  "status_free": "*Your status:*\n\nPlan: Free\nAlerts remaining: {free_left}/{free_limit}\nActive preferences: {pref_count}\n\nGet unlimited alerts: /subscribe",
+  "status_subscribed": "*Your status:*\n\nPlan: Active subscription\nValid until: {expires}\nActive preferences: {pref_count}",
+
+  "subscribe_prompt": "Subscribe for unlimited alerts at $9.99/month:\n{checkout_url}",
+  "already_subscribed": "You already have an active subscription until {expires}.",
+
+  "no_preferences": "You have no active preferences. Use /add to create one.",
+  "preferences_list": "*Your preferences:*\n\n{list}\n\nTap a preference to edit or delete it.",
+  "preference_limit_reached": "You've reached the {limit}-alert limit on your current plan. {upgrade_hint}",
+  "preference_limit_upgrade_hint": "Subscribe for up to 50 alerts at $9.99/month: /subscribe",
+  "preference_limit_pro_hint": "You're on Pro with 50 alerts. Delete an existing alert via /preferences to add a new one.",
+  "preference_duplicate": "You already have an alert called \"{name}\" that monitors the same thing. Use /preferences to view or edit it.",
+  "auction_threshold_note": "ℹ️ For auctions, you'll be alerted when the ending time is within 1 hour and the current bid is below your target price.",
+  "preference_empty_keywords_warning": "⚠️ No keywords set — this alert will match *every* listing in the selected categories and use up your free alerts quickly. Add keywords to narrow it down, or continue anyway.",
+  "preference_deleted": "Preference \"{name}\" deleted.",
+  "preference_edit_menu": "Editing: *{name}*\n\nWhat would you like to change?",
+  "edit_keywords": "Keywords",
+  "edit_price": "Price range",
+  "edit_categories": "Categories",
+  "delete_preference": "Delete preference",
+  "back": "Back",
+
+  "help_text": "*PokeScout — Help*\n\n/browse – Browse single cards by series and set\n/sealed – Browse ETBs and booster boxes\n/preferences – View and edit preferences\n/status – View subscription status\n/subscribe – Upgrade to paid plan\n/help – Show this help",
+
+  "admin_stats": "*Admin Stats:*\n\nActive users: {users}\nSubscribers: {subscribed}\nNotifications today: {notifs_today}\nActive preferences: {prefs}\n\neBay: {ebay_status}",
+  "admin_health": "*Scraper Health:*\n\n{runs}",
+  "admin_only": "This command is only available to admins.",
+
+  "add_search_prompt": "What are you looking for?\n\nType a card or product name:",
+  "add_searching": "🔍 Searching…",
+  "add_no_results": "No exact matches for \"{query}\".\n\nI can still alert you when eBay listings mentioning \"{query}\" appear:",
+  "add_set_price": "🔔 *{name}*{price_line}\n\nSet your target price:\n\n{auction_note}",
+  "setup_prompt": "Set up multiple alerts at once:\n{url}\n_(Valid 15 minutes)_",
+  "setup_confirmed": "✅ {count} alert(s) created! Use /preferences to manage them.",
+
+  "error_generic": "An error occurred. Please try again.",
+  "cancel": "Cancelled.",
+  "done": "Done!"
+}

@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>PokeScout Bot — Flow</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0a14;
+    color: #f0f0f0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 48px 32px;
+    min-height: 100vh;
+  }
+  h1 {
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    margin-bottom: 8px;
+    color: #f5b731;
+  }
+  .subtitle { text-align: center; color: #8888aa; font-size: 0.85rem; margin-bottom: 56px; }
+
+  .flow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ── Node ── */
+  .node {
+    border-radius: 14px;
+    padding: 14px 22px;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+  }
+  .node-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 4px;
+  }
+  .node-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+  .node-sub {
+    font-size: 0.75rem;
+    color: #8888aa;
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* node colours */
+  .n-start   { background: #f5b731; color: #0a0a14; min-width: 180px; }
+  .n-state   { background: #12121f; border: 1px solid rgba(245,183,49,0.25); min-width: 220px; }
+  .n-end     { background: #00d4aa22; border: 1px solid #00d4aa55; color: #00d4aa; min-width: 220px; }
+  .n-branch  { background: #1a1a2e; border: 1px solid rgba(100,160,255,0.3); min-width: 200px; }
+
+  /* ── Arrow ── */
+  .arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .arrow-line {
+    width: 2px;
+    background: rgba(245,183,49,0.25);
+    flex: 1;
+    min-height: 20px;
+  }
+  .arrow-tip {
+    width: 0; height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid rgba(245,183,49,0.35);
+  }
+  .arrow-label {
+    font-size: 0.68rem;
+    color: #8888aa;
+    background: #0a0a14;
+    padding: 1px 8px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.07);
+    white-space: nowrap;
+    margin: 4px 0;
+  }
+
+  /* ── Branch row ── */
+  .branch-row {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    justify-content: center;
+    width: 100%;
+    position: relative;
+  }
+  .branch-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    max-width: 260px;
+  }
+  .branch-line-h {
+    height: 2px;
+    background: rgba(245,183,49,0.2);
+    position: absolute;
+    top: 0;
+    left: 25%; right: 25%;
+  }
+
+  /* ── Section header ── */
+  .section-header {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #f5b731;
+    opacity: 0.5;
+    margin: 40px 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .section-header::before, .section-header::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: rgba(245,183,49,0.15);
+  }
+
+  /* standalone commands grid */
+  .commands-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .cmd-card {
+    background: #12121f;
+    border: 1px solid rgba(245,183,49,0.15);
+    border-radius: 12px;
+    padding: 16px;
+  }
+  .cmd-card .cmd { font-size: 0.85rem; font-weight: 700; color: #f5b731; margin-bottom: 6px; font-family: monospace; }
+  .cmd-card .desc { font-size: 0.78rem; color: #8888aa; line-height: 1.5; }
+  .cmd-card.admin { border-color: rgba(147,51,234,0.3); }
+  .cmd-card.admin .cmd { color: #c084fc; }
+  .tag {
+    display: inline-block;
+    font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em;
+    padding: 2px 6px; border-radius: 4px;
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+  .tag-admin { background: rgba(147,51,234,0.2); color: #c084fc; }
+  .tag-user  { background: rgba(0,212,170,0.15); color: #00d4aa; }
+</style>
+</head>
+<body>
+
+<h1>PokeScout Bot — Conversation Flow</h1>
+<p class="subtitle">Complete state machine for the Telegram onboarding + preference creation flow</p>
+
+<div class="flow">
+
+  <!-- START -->
+  <div class="node n-start">
+    <div class="node-title">/start &nbsp;or&nbsp; /add</div>
+  </div>
+
+  <div class="arrow" style="height:32px"><div class="arrow-line"></div><div class="arrow-tip"></div></div>
+
+  <!-- CHOOSE LANG -->
+  <div class="node n-state">
+    <div class="node-label">State 0</div>
+    <div class="node-title">Choose Language</div>
+    <div class="node-sub">🇮🇱 עברית &nbsp;·&nbsp; 🇬🇧 English</div>
+  </div>
+
+  <div class="arrow" style="height:32px"><div class="arrow-line"></div><div class="arrow-tip"></div></div>
+
+  <!-- CHOOSE CATEGORIES -->
+  <div class="node n-state">
+    <div class="node-label">State 1</div>
+    <div class="node-title">Choose Categories</div>
+    <div class="node-sub">📦 Sealed &nbsp;·&nbsp; 🃏 Singles &nbsp;·&nbsp; ⭐ Graded &nbsp;·&nbsp; 📚 Bulk<br/>Toggle multiple → tap Done (≥1 required)</div>
+  </div>
+
+  <div class="arrow" style="height:32px"><div class="arrow-line"></div><div class="arrow-tip"></div></div>
+
+  <!-- CHOOSE PRESET -->
+  <div class="node n-state">
+    <div class="node-label">State 9</div>
+    <div class="node-title">Choose Preset</div>
+    <div class="node-sub">Popular cards with live TCGPlayer prices<br/>or Custom &nbsp;·&nbsp; or Skip</div>
+  </div>
+
+  <!-- 3-way branch from preset -->
+  <div style="display:flex; flex-direction:column; align-items:center; width:100%; gap:0; margin-top:0">
+    <div style="width:2px; height:20px; background:rgba(245,183,49,0.25)"></div>
+    <div style="width:60%; height:2px; background:rgba(245,183,49,0.2); position:relative">
+      <!-- left dot -->
+      <div style="position:absolute; left:0; top:-4px; width:10px; height:10px; border-radius:50%; background:rgba(245,183,49,0.4)"></div>
+      <!-- center dot -->
+      <div style="position:absolute; left:50%; transform:translateX(-50%); top:-4px; width:10px; height:10px; border-radius:50%; background:rgba(245,183,49,0.4)"></div>
+      <!-- right dot -->
+      <div style="position:absolute; right:0; top:-4px; width:10px; height:10px; border-radius:50%; background:rgba(245,183,49,0.4)"></div>
+    </div>
+
+    <div class="branch-row" style="margin-top:0; padding-top:0">
+      <!-- Branch A: Preset selected -->
+      <div class="branch-col">
+        <div style="width:2px; height:20px; background:rgba(245,183,49,0.25)"></div>
+        <div class="arrow-label">Tap preset</div>
+        <div style="width:2px; height:12px; background:rgba(245,183,49,0.25)"></div>
+        <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid rgba(245,183,49,0.35)"></div>
+        <div class="node n-branch" style="margin-top:0">
+          <div class="node-title" style="font-size:0.8rem">→ Skip to LOCATION</div>
+          <div class="node-sub">Keywords + price pre-filled from preset</div>
+        </div>
+      </div>
+
+      <!-- Branch B: Custom -->
+      <div class="branch-col">
+        <div style="width:2px; height:20px; background:rgba(245,183,49,0.25)"></div>
+        <div class="arrow-label">Custom</div>
+        <div style="width:2px; height:12px; background:rgba(245,183,49,0.25)"></div>
+        <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid rgba(245,183,49,0.35)"></div>
+        <div class="node n-state" style="margin-top:0">
+          <div class="node-label">State 2</div>
+          <div class="node-title">Enter Keywords</div>
+          <div class="node-sub">Comma-separated &nbsp;·&nbsp; or /skip</div>
+        </div>
+      </div>
+
+      <!-- Branch C: Skip -->
+      <div class="branch-col">
+        <div style="width:2px; height:20px; background:rgba(245,183,49,0.25)"></div>
+        <div class="arrow-label">Skip presets</div>
+        <div style="width:2px; height:12px; background:rgba(245,183,49,0.25)"></div>
+        <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid rgba(245,183,49,0.35)"></div>
+        <div class="node n-state" style="margin-top:0">
+          <div class="node-label">State 3</div>
+          <div class="node-title">Choose Price</div>
+          <div class="node-sub">₪100 / ₪250 / ₪500 / ₪1000 / Any / Custom</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- converge back -->
+  <div style="width:60%; height:2px; background:rgba(245,183,49,0.15); margin-top:12px"></div>
+  <div style="display:flex; flex-direction:column; align-items:center; gap:0">
+    <div class="arrow-label">all paths →</div>
+    <div style="width:2px; height:16px; background:rgba(245,183,49,0.25)"></div>
+    <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid rgba(245,183,49,0.35)"></div>
+  </div>
+
+  <!-- Custom price -->
+  <div class="node n-branch" style="margin-top:4px">
+    <div class="node-title" style="font-size:0.82rem">Custom range? → States 4 + 5</div>
+    <div class="node-sub">Enter Min Price → Enter Max Price (with validation loop)</div>
+  </div>
+
+  <div class="arrow" style="height:32px"><div class="arrow-line"></div><div class="arrow-tip"></div></div>
+
+  <!-- ENTER LOCATION -->
+  <div class="node n-state">
+    <div class="node-label">State 6</div>
+    <div class="node-title">Enter Location</div>
+    <div class="node-sub">Type city name &nbsp;·&nbsp; Share GPS location &nbsp;·&nbsp; /skip</div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; align-items:center;">
+    <div style="width:2px; height:20px; background:rgba(245,183,49,0.25)"></div>
+    <div style="display:flex; gap:32px; align-items:flex-start;">
+      <div style="display:flex; flex-direction:column; align-items:center;">
+        <div class="arrow-label">city / GPS</div>
+        <div style="width:2px; height:12px; background:rgba(245,183,49,0.25)"></div>
+        <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid rgba(245,183,49,0.35)"></div>
+        <div class="node n-state" style="margin-top:0">
+          <div class="node-label">State 7</div>
+          <div class="node-title">Choose Radius</div>
+          <div class="node-sub">10 km · 25 km · 50 km · Country-wide</div>
+        </div>
+        <div style="width:2px; height:16px; background:rgba(245,183,49,0.25)"></div>
+        <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid rgba(245,183,49,0.35)"></div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; padding-top:36px;">
+        <div class="arrow-label">/skip</div>
+        <div style="width:2px; height:12px; background:rgba(245,183,49,0.25)"></div>
+        <div style="width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:8px solid rgba(245,183,49,0.35)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENTER NAME -->
+  <div class="node n-state">
+    <div class="node-label">State 8</div>
+    <div class="node-title">Enter Preference Name</div>
+    <div class="node-sub">Suggests preset name if preset was chosen</div>
+  </div>
+
+  <div class="arrow" style="height:32px"><div class="arrow-line"></div><div class="arrow-tip"></div></div>
+
+  <!-- END -->
+  <div class="node n-end">
+    <div class="node-title">✅ Preference Saved</div>
+    <div class="node-sub">Bot will now alert on matching listings</div>
+  </div>
+
+  <!-- Cancel -->
+  <div style="margin-top:20px; padding:12px 20px; border-radius:10px; border:1px solid rgba(239,68,68,0.25); background:rgba(239,68,68,0.07); font-size:0.78rem; color:#f87171; text-align:center;">
+    ⚠️ /cancel at any state → ends conversation without saving
+  </div>
+
+</div>
+
+<!-- STANDALONE COMMANDS -->
+<div class="section-header">Standalone Commands</div>
+
+<div class="commands-grid">
+  <div class="cmd-card">
+    <div class="tag tag-user">User</div>
+    <div class="cmd">/preferences</div>
+    <div class="desc">List all saved preferences. Edit name, delete, or add a new one.</div>
+  </div>
+  <div class="cmd-card">
+    <div class="tag tag-user">User</div>
+    <div class="cmd">/status</div>
+    <div class="desc">Show subscription status, free alerts remaining, and active preference count.</div>
+  </div>
+  <div class="cmd-card">
+    <div class="tag tag-user">User</div>
+    <div class="cmd">/subscribe</div>
+    <div class="desc">Generate Stripe checkout link for Pro plan (₪29/month). Unlimited alerts.</div>
+  </div>
+  <div class="cmd-card">
+    <div class="tag tag-user">User</div>
+    <div class="cmd">/language</div>
+    <div class="desc">Switch between Hebrew and English at any time.</div>
+  </div>
+  <div class="cmd-card">
+    <div class="tag tag-user">User</div>
+    <div class="cmd">/help</div>
+    <div class="desc">Show all available commands and usage instructions.</div>
+  </div>
+  <div class="cmd-card admin">
+    <div class="tag tag-admin">Admin</div>
+    <div class="cmd">/addgroup &lt;url&gt;</div>
+    <div class="desc">Add a Facebook group URL to the scraping list.</div>
+  </div>
+  <div class="cmd-card admin">
+    <div class="tag tag-admin">Admin</div>
+    <div class="cmd">/removegroup &lt;url&gt;</div>
+    <div class="desc">Deactivate a Facebook group from scraping.</div>
+  </div>
+  <div class="cmd-card admin">
+    <div class="tag tag-admin">Admin</div>
+    <div class="cmd">/groups</div>
+    <div class="desc">List all active Facebook groups being monitored.</div>
+  </div>
+  <div class="cmd-card admin">
+    <div class="tag tag-admin">Admin</div>
+    <div class="cmd">/admin_stats</div>
+    <div class="desc">Users, subscriptions, notifications today, active preferences, scraper health.</div>
+  </div>
+  <div class="cmd-card admin">
+    <div class="tag tag-admin">Admin</div>
+    <div class="cmd">/admin_health</div>
+    <div class="desc">Last 10 scrape runs with status, platform, listing count, and duration.</div>
+  </div>
+</div>
+
+<p style="text-align:center; color:#8888aa; font-size:0.72rem; margin-top:48px; opacity:0.5;">PokeScout Bot · Flow v1 · 2026</p>
+
+</body>
+</html>

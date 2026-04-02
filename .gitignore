@@ -1,0 +1,22 @@
+# Environment
+.env
+*.env.local
+
+# Facebook session (contains login cookies — never commit)
+fb_session.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.ruff_cache/
+dist/
+*.egg-info/
+.venv/
+venv/
+
+# Editor
+.vscode/
+.idea/
+*.swp

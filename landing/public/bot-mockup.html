@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PokeScout Bot Demo</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 640px;
+    height: 360px;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  .phone-wrapper {
+    position: relative;
+    width: 320px;
+    height: 640px;
+    transform: scale(0.52);
+    transform-origin: center center;
+    flex-shrink: 0;
+  }
+
+  /* Phone frame */
+  .phone-frame {
+    position: absolute;
+    inset: 0;
+    border-radius: 44px;
+    background: #1a1a1a;
+    box-shadow:
+      0 0 0 2px #3a3a3a,
+      0 0 0 4px #111,
+      0 30px 80px rgba(0,0,0,0.5),
+      0 10px 30px rgba(0,0,0,0.3);
+    overflow: hidden;
+  }
+
+  /* Screen notch area */
+  .phone-notch {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 120px;
+    height: 28px;
+    background: #1a1a1a;
+    border-radius: 0 0 20px 20px;
+    z-index: 100;
+  }
+
+  /* Screen */
+  .screen {
+    position: absolute;
+    inset: 0;
+    border-radius: 42px;
+    background: #212121;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Status bar */
+  .status-bar {
+    height: 44px;
+    background: #1c2936;
+    display: flex;
+    align-items: flex-end;
+    padding: 0 20px 6px;
+    justify-content: space-between;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 10;
+  }
+
+  .status-time {
+    font-size: 12px;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.3px;
+  }
+
+  .status-icons {
+    display: flex;
+    gap: 5px;
+    align-items: center;
+  }
+
+  .status-icons svg {
+    fill: white;
+  }
+
+  /* Chat header */
+  .chat-header {
+    background: #1c2936;
+    padding: 8px 14px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .header-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+  .header-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+
+  .header-info { flex: 1; }
+
+  .header-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  .header-status {
+    font-size: 11px;
+    color: #5ac379;
+  }
+
+  .header-icons {
+    display: flex;
+    gap: 14px;
+    color: #8cb0cc;
+    font-size: 16px;
+  }
+
+  /* Messages area */
+  .messages {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 10px 8px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    scroll-behavior: smooth;
+  }
+
+  .messages::-webkit-scrollbar { display: none; }
+
+  /* Message groups */
+  .msg-row {
+    display: flex;
+    gap: 6px;
+    align-items: flex-end;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+
+  .msg-row.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .msg-row.right {
+    justify-content: flex-end;
+  }
+
+  .msg-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-bottom: 2px;
+    overflow: hidden;
+  }
+  .msg-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
+
+  .msg-avatar.hidden {
+    visibility: hidden;
+  }
+
+  /* Bubbles */
+  .bubble {
+    max-width: 220px;
+    padding: 7px 10px;
+    border-radius: 16px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: #fff;
+    position: relative;
+    word-wrap: break-word;
+  }
+
+  .bubble.bot {
+    background: #2b2b2b;
+    border-bottom-left-radius: 4px;
+  }
+
+  .bubble.user {
+    background: #0088cc;
+    border-bottom-right-radius: 4px;
+  }
+
+  .bubble .timestamp {
+    font-size: 10px;
+    color: rgba(255,255,255,0.45);
+    float: right;
+    margin-left: 8px;
+    margin-top: 2px;
+    line-height: 1;
+  }
+
+  .bubble strong {
+    font-weight: 700;
+  }
+
+  /* Inline keyboard */
+  .inline-kbd {
+    max-width: 232px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 4px;
+  }
+
+  .kbd-row {
+    display: flex;
+    gap: 4px;
+  }
+
+  .kbd-btn {
+    flex: 1;
+    background: #2b5278;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 5px;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.2;
+    transition: background 0.15s;
+  }
+
+  .kbd-btn.tapped {
+    background: #1a6fa8;
+    animation: tapFlash 0.4s ease;
+  }
+
+  @keyframes tapFlash {
+    0% { background: #2b5278; }
+    30% { background: #5599cc; }
+    100% { background: #1a6fa8; }
+  }
+
+  /* Typing indicator */
+  .typing-row {
+    display: flex;
+    gap: 6px;
+    align-items: flex-end;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+  }
+
+  .typing-row.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .typing-bubble {
+    background: #2b2b2b;
+    border-radius: 16px;
+    border-bottom-left-radius: 4px;
+    padding: 10px 14px;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+  }
+
+  .dot {
+    width: 6px;
+    height: 6px;
+    background: #888;
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
+  }
+
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
+
+  /* Deal message special */
+  .deal-bubble-wrapper {
+    max-width: 232px;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #2b2b2b;
+    box-shadow: 0 0 20px rgba(0,136,204,0.35), 0 0 40px rgba(0,136,204,0.15);
+    animation: dealGlow 2s ease-in-out infinite alternate;
+    border-bottom-left-radius: 4px;
+  }
+
+  @keyframes dealGlow {
+    from { box-shadow: 0 0 12px rgba(0,136,204,0.3), 0 0 24px rgba(0,136,204,0.1); }
+    to   { box-shadow: 0 0 24px rgba(0,136,204,0.6), 0 0 48px rgba(0,136,204,0.25); }
+  }
+
+  .deal-photo {
+    width: 100%;
+    height: 120px;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f3460 70%, #533483 100%);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .deal-photo::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 50% 30%, rgba(255,165,0,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 70%, rgba(83,52,131,0.4) 0%, transparent 50%);
+  }
+
+  .deal-photo-stars {
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,0.6) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 80% 60%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 15% 65%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 70% 45%, rgba(255,255,255,0.4) 0%, transparent 100%);
+  }
+
+  .deal-photo-pokeball {
+    position: absolute;
+    right: -20px;
+    bottom: -20px;
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 14px solid rgba(255,255,255,0.08);
+    opacity: 0.4;
+  }
+
+  .deal-photo-pokeball::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: -14px;
+    right: -14px;
+    height: 3px;
+    background: rgba(255,255,255,0.15);
+    transform: translateY(-50%);
+  }
+
+  .deal-photo-etb {
+    position: relative;
+    z-index: 2;
+    width: 55px;
+    height: 72px;
+    background: linear-gradient(160deg, #2a1a4e, #1a0d3a);
+    border-radius: 4px;
+    border: 1px solid rgba(255,140,0,0.4);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4px;
+    gap: 2px;
+  }
+
+  .etb-logo {
+    font-size: 5px;
+    font-weight: 900;
+    color: #ffa500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.3;
+    text-shadow: 0 0 8px rgba(255,165,0,0.8);
+  }
+
+  .etb-divider {
+    width: 80%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,140,0,0.6), transparent);
+  }
+
+  .etb-subtitle {
+    font-size: 4px;
+    color: rgba(255,255,255,0.7);
+    text-align: center;
+    letter-spacing: 0.3px;
+    line-height: 1.4;
+  }
+
+  .deal-photo-label {
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 2;
+  }
+
+  .deal-photo-label span {
+    font-size: 9px;
+    font-weight: 800;
+    color: #ffa500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(255,165,0,0.9), 0 1px 3px rgba(0,0,0,0.8);
+    background: rgba(0,0,0,0.3);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .deal-caption {
+    padding: 8px 10px;
+    font-size: 11.5px;
+    line-height: 1.5;
+    color: #e8e8e8;
+  }
+
+  .deal-divider {
+    color: #444;
+    margin: 2px 0;
+    letter-spacing: 1px;
+  }
+
+  .deal-link {
+    color: #5ac8fa;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .deal-caption .timestamp {
+    font-size: 10px;
+    color: rgba(255,255,255,0.35);
+    float: right;
+    margin-top: 2px;
+  }
+
+  /* Input bar */
+  .input-bar {
+    background: #1c1c1e;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .input-field {
+    flex: 1;
+    background: #2b2b2b;
+    border-radius: 20px;
+    padding: 7px 12px;
+    color: #fff;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    min-height: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .input-text {
+    color: #fff;
+    font-size: 13px;
+  }
+
+  .input-cursor {
+    display: inline-block;
+    width: 1.5px;
+    height: 14px;
+    background: #fff;
+    margin-left: 1px;
+    vertical-align: middle;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+
+  .input-icons {
+    color: #8cb0cc;
+    font-size: 18px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+
+  .send-btn {
+    width: 32px;
+    height: 32px;
+    background: #0088cc;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: scale(0.8);
+    transition: opacity 0.2s, transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .send-btn.show {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  .send-btn svg {
+    fill: white;
+    margin-left: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-wrapper">
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="screen">
+
+      <!-- Status bar -->
+      <div class="status-bar">
+        <span class="status-time">9:41</span>
+        <div class="status-icons">
+          <!-- Signal -->
+          <svg width="16" height="12" viewBox="0 0 16 12">
+            <rect x="0" y="8" width="3" height="4" rx="0.5" opacity="1"/>
+            <rect x="4.5" y="5.5" width="3" height="6.5" rx="0.5" opacity="1"/>
+            <rect x="9" y="3" width="3" height="9" rx="0.5" opacity="1"/>
+            <rect x="13.5" y="0" width="2.5" height="12" rx="0.5" opacity="0.3"/>
+          </svg>
+          <!-- WiFi -->
+          <svg width="15" height="12" viewBox="0 0 15 12">
+            <path d="M7.5 10a1.5 1.5 0 1 1 0-1 1.5 1.5 0 0 1 0 1z"/>
+            <path d="M3.6 6.8a5.5 5.5 0 0 1 7.8 0" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round"/>
+            <path d="M1 4.3A9 9 0 0 1 14 4.3" fill="none" stroke="white" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+          </svg>
+          <!-- Battery -->
+          <svg width="22" height="12" viewBox="0 0 22 12">
+            <rect x="0" y="1" width="18" height="10" rx="2.5" fill="none" stroke="white" stroke-width="1"/>
+            <rect x="1" y="2" width="14" height="8" rx="1.5" fill="white"/>
+            <path d="M19.5 4v4a1.5 1.5 0 0 0 0-4z" fill="white" opacity="0.4"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Chat header -->
+      <div class="chat-header">
+        <div class="header-avatar"><img src="telegram.png" alt="PokeScout" /></div>
+        <div class="header-info">
+          <div class="header-name">PokeScout</div>
+          <div class="header-status">● online</div>
+        </div>
+        <div class="header-icons">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#8cb0cc"><path d="M6.62 10.79a15.15 15.15 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24 11.47 11.47 0 0 0 3.58.57 1 1 0 0 1 1 1v3.5a1 1 0 0 1-1 1A17 17 0 0 1 3 5a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.58a1 1 0 0 1-.25 1.01l-2.2 2.2z"/></svg>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="#8cb0cc"><circle cx="12" cy="12" r="1.5"/><circle cx="6" cy="12" r="1.5"/><circle cx="18" cy="12" r="1.5"/></svg>
+        </div>
+      </div>
+
+      <!-- Messages -->
+      <div class="messages" id="messages"></div>
+
+      <!-- Input bar -->
+      <div class="input-bar">
+        <div class="input-field">
+          <span class="input-text" id="input-text"></span><span class="input-cursor" id="input-cursor" style="display:none;"></span>
+        </div>
+        <div class="input-icons">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="#8cb0cc"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 4a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm0 4a1 1 0 0 1 1 1v5a1 1 0 0 1-2 0v-5a1 1 0 0 1 1-1z"/></svg>
+        </div>
+        <div class="send-btn" id="send-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const messagesEl = document.getElementById('messages');
+const inputText = document.getElementById('input-text');
+const inputCursor = document.getElementById('input-cursor');
+const sendBtn = document.getElementById('send-btn');
+
+let animTimeout = null;
+let allTimeouts = [];
+
+function schedule(fn, delay) {
+  const t = setTimeout(fn, delay);
+  allTimeouts.push(t);
+  return t;
+}
+
+function clearAll() {
+  allTimeouts.forEach(clearTimeout);
+  allTimeouts = [];
+  messagesEl.innerHTML = '';
+  inputText.textContent = '';
+  inputCursor.style.display = 'none';
+  sendBtn.classList.remove('show');
+}
+
+// Typing simulation
+function typeText(text, el, speed, cb) {
+  let i = 0;
+  inputCursor.style.display = 'inline-block';
+  function next() {
+    if (i <= text.length) {
+      el.textContent = text.slice(0, i);
+      i++;
+      const t = setTimeout(next, speed);
+      allTimeouts.push(t);
+    } else {
+      if (cb) cb();
+    }
+  }
+  next();
+}
+
+function clearInput(cb) {
+  inputText.textContent = '';
+  inputCursor.style.display = 'none';
+  sendBtn.classList.remove('show');
+  if (cb) cb();
+}
+
+function showSend() {
+  sendBtn.classList.add('show');
+}
+
+function addMessage(html, side, withAvatar, delay, cb) {
+  schedule(() => {
+    const row = document.createElement('div');
+    row.className = 'msg-row' + (side === 'right' ? ' right' : '');
+
+    if (side === 'left') {
+      const av = document.createElement('div');
+      av.className = 'msg-avatar' + (withAvatar ? '' : ' hidden');
+      av.innerHTML = '<img src="telegram.png" alt="" />';
+      row.appendChild(av);
+    }
+
+    const bub = document.createElement('div');
+    bub.className = 'bubble ' + side;
+    bub.innerHTML = html;
+    row.appendChild(bub);
+
+    messagesEl.appendChild(row);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        row.classList.add('visible');
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+      });
+    });
+
+    if (cb) cb();
+  }, delay);
+}
+
+function addTypingIndicator(delay, cb) {
+  schedule(() => {
+    const row = document.createElement('div');
+    row.className = 'typing-row';
+    row.id = 'typing';
+    row.innerHTML = `
+      <div class="msg-avatar"><img src="telegram.png" alt="P" /></div>
+      <div class="typing-bubble">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>`;
+    messagesEl.appendChild(row);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      row.classList.add('visible');
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }));
+    if (cb) cb();
+  }, delay);
+}
+
+function removeTyping() {
+  const t = document.getElementById('typing');
+  if (t) t.remove();
+}
+
+function addBotMessage(html, withKbd, kbdHtml, delay, cb) {
+  schedule(() => {
+    removeTyping();
+    const row = document.createElement('div');
+    row.className = 'msg-row';
+
+    const av = document.createElement('div');
+    av.className = 'msg-avatar';
+    av.innerHTML = '<img src="telegram.png" alt="" />';
+    row.appendChild(av);
+
+    const col = document.createElement('div');
+    col.style.display = 'flex';
+    col.style.flexDirection = 'column';
+    col.style.gap = '4px';
+    col.style.maxWidth = '232px';
+
+    const bub = document.createElement('div');
+    bub.className = 'bubble bot';
+    bub.innerHTML = html;
+    col.appendChild(bub);
+
+    if (withKbd && kbdHtml) {
+      const kbd = document.createElement('div');
+      kbd.className = 'inline-kbd';
+      kbd.innerHTML = kbdHtml;
+      col.appendChild(kbd);
+    }
+
+    row.appendChild(col);
+    messagesEl.appendChild(row);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      row.classList.add('visible');
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }));
+
+    if (cb) cb();
+  }, delay);
+}
+
+function tapButton(selector, delay, cb) {
+  schedule(() => {
+    const btn = document.querySelector(selector);
+    if (btn) {
+      btn.classList.add('tapped');
+    }
+    if (cb) cb();
+  }, delay);
+}
+
+function addDealMessage(delay, cb) {
+  schedule(() => {
+    removeTyping();
+    const row = document.createElement('div');
+    row.className = 'msg-row';
+
+    const av = document.createElement('div');
+    av.className = 'msg-avatar';
+    av.innerHTML = '<img src="telegram.png" alt="" />';
+    row.appendChild(av);
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'deal-bubble-wrapper';
+
+    wrapper.innerHTML = `
+      <img src="seller-phantasmal.jpeg" style="width:100%;display:block;border-radius:12px 12px 0 0;object-fit:cover;max-height:200px;" />
+      <div class="deal-caption">
+        🔔 <strong>New Deal Found</strong><br>
+        <span class="deal-divider">━━━━━━━━━━━━━━</span><br>
+        📦 Pokémon Phantasmal Flames Elite Trainer Box ETB – Factory Sealed <strong>IN HAND</strong><br><br>
+        💰 <strong>$94.99</strong><br>
+        🏷 Buy It Now · eBay<br><br>
+        🔗 <a class="deal-link" href="#">View on eBay</a><br><br>
+        🏷 <em>Alert: Phantasmal Flames Elite Trainer Box</em>
+        <span class="timestamp">15:33</span>
+      </div>
+    `;
+
+    row.appendChild(wrapper);
+    messagesEl.appendChild(row);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      row.classList.add('visible');
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }));
+
+    if (cb) cb();
+  }, delay);
+}
+
+function runAnimation() {
+  clearAll();
+
+  // Scene 1: user types /sealed (0-1.4s)
+  schedule(() => {
+    inputCursor.style.display = 'inline-block';
+    typeText('/sealed', inputText, 80, () => {
+      showSend();
+      schedule(() => {
+        clearInput();
+        addMessage('/sealed <span class="timestamp">15:30</span>', 'right', false, 0, null);
+      }, 350);
+    });
+  }, 400);
+
+  // Scene 2: bot asks product type (1.6-2.8s)
+  addTypingIndicator(1600, null);
+
+  addBotMessage(
+    '📦 What type of sealed product are you looking for? <span class="timestamp">15:30</span>',
+    true,
+    `<div class="kbd-row">
+      <button class="kbd-btn" id="btn-etb">🎁 Elite Trainer Box</button>
+      <button class="kbd-btn">📦 Booster Box</button>
+    </div>
+    <div class="kbd-row">
+      <button class="kbd-btn">🔍 All</button>
+      <button class="kbd-btn">❌ Cancel</button>
+    </div>`,
+    2300, null
+  );
+
+  // Scene 3: user taps Elite Trainer Box (3.2s)
+  tapButton('#btn-etb', 3200, null);
+  schedule(() => {
+    addMessage('🎁 Elite Trainer Box <span class="timestamp">15:30</span>', 'right', false, 0, null);
+  }, 3500);
+
+  // Scene 4: bot shows ETB product list (4-5.5s)
+  addTypingIndicator(3700, null);
+
+  addBotMessage(
+    '🎁 <strong>Elite Trainer Boxes</strong><br>Select a product to set an alert: <span class="timestamp">15:31</span>',
+    true,
+    `<div class="kbd-row">
+      <button class="kbd-btn" id="btn-pf">🎁 Phantasmal Flames ETB</button>
+    </div>
+    <div class="kbd-row">
+      <button class="kbd-btn">🎁 Ascended Heroes ETB</button>
+    </div>
+    <div class="kbd-row">
+      <button class="kbd-btn">🎁 Prismatic Evolutions ETB</button>
+    </div>
+    <div class="kbd-row">
+      <button class="kbd-btn">⬅️ Prev</button>
+      <button class="kbd-btn">Next ➡️</button>
+    </div>
+    <div class="kbd-row">
+      <button class="kbd-btn">↩️ Category</button>
+    </div>`,
+    4500, null
+  );
+
+  // Scene 5: user taps Phantasmal Flames ETB (6s)
+  tapButton('#btn-pf', 6000, null);
+  schedule(() => {
+    addMessage('🎁 Phantasmal Flames ETB <span class="timestamp">15:31</span>', 'right', false, 0, null);
+  }, 6280);
+
+  // Scene 6: bot shows product detail with photo-style card (6.8-8s)
+  addTypingIndicator(6500, null);
+
+  schedule(() => {
+    removeTyping();
+    const row = document.createElement('div');
+    row.className = 'msg-row';
+
+    const av = document.createElement('div');
+    av.className = 'msg-avatar';
+    av.innerHTML = '<img src="telegram.png" alt="" />';
+    row.appendChild(av);
+
+    const col = document.createElement('div');
+    col.style.display = 'flex';
+    col.style.flexDirection = 'column';
+    col.style.gap = '4px';
+    col.style.maxWidth = '232px';
+
+    // Photo card
+    const card = document.createElement('div');
+    card.style.cssText = 'width:232px;border-radius:12px 12px 0 0;overflow:hidden;background:#2b2b2b;';
+    card.innerHTML = `<img src="phantasmal-etb-ref.jpg" style="width:100%;display:block;object-fit:cover;max-height:180px;" />`;
+    col.appendChild(card);
+
+    // Caption bubble
+    const bub = document.createElement('div');
+    bub.className = 'bubble bot';
+    bub.style.borderRadius = '0 0 16px 16px';
+    bub.style.borderBottomLeftRadius = '4px';
+    bub.style.marginTop = '0';
+    bub.innerHTML = '<strong>Phantasmal Flames Elite Trainer Box</strong><br>📦 Mega Evolution <span class="timestamp">15:31</span>';
+    col.appendChild(bub);
+
+    const kbd = document.createElement('div');
+    kbd.className = 'inline-kbd';
+    kbd.innerHTML = `
+      <div class="kbd-row">
+        <button class="kbd-btn" id="btn-alert-me">🔔 Alert me</button>
+        <button class="kbd-btn">↩️ List</button>
+      </div>`;
+    col.appendChild(kbd);
+
+    row.appendChild(col);
+    messagesEl.appendChild(row);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      row.classList.add('visible');
+      messagesEl.scrollTop = messagesEl.scrollHeight;
+    }));
+  }, 7200);
+
+  // Scene 7: user taps Alert me (8.4s)
+  tapButton('#btn-alert-me', 8400, null);
+  schedule(() => {
+    addMessage('🔔 Alert me <span class="timestamp">15:32</span>', 'right', false, 0, null);
+  }, 8680);
+
+  // Scene 8: price keyboard (9.2-10.5s)
+  addTypingIndicator(8900, null);
+
+  addBotMessage(
+    '🔔 <strong>Phantasmal Flames Elite Trainer Box</strong><br><br>What price range interests you? <span class="timestamp">15:32</span>',
+    true,
+    `<div class="kbd-row">
+      <button class="kbd-btn">Any price</button>
+      <button class="kbd-btn">Up to $50</button>
+    </div>
+    <div class="kbd-row">
+      <button class="kbd-btn" id="btn-100">Up to $100</button>
+      <button class="kbd-btn">Up to $250</button>
+    </div>
+    <div class="kbd-row">
+      <button class="kbd-btn">Up to $500</button>
+      <button class="kbd-btn">Custom</button>
+    </div>`,
+    9700, null
+  );
+
+  // Scene 9: user taps Up to $100 (11s)
+  tapButton('#btn-100', 11000, null);
+  schedule(() => {
+    addMessage('Up to $100 <span class="timestamp">15:32</span>', 'right', false, 0, null);
+  }, 11280);
+
+  // Scene 10: confirmation (11.8-13s)
+  addTypingIndicator(11500, null);
+
+  addBotMessage(
+    '✅ <strong>Phantasmal Flames Elite Trainer Box</strong> (up to $100)<br><br>I\'ll alert you when a deal is found!<br>🔔 10 free alerts remaining. <span class="timestamp">15:33</span>',
+    false,
+    null,
+    12200, null
+  );
+
+  // Scene 11: 2s pause then deal arrives (15-17s)
+  addTypingIndicator(14500, null);
+
+  addDealMessage(15700, null);
+
+  // Loop after 5s pause at end
+  schedule(() => {
+    runAnimation();
+  }, 23500);
+}
+
+// Start
+runAnimation();
+</script>
+</body>
+</html>
