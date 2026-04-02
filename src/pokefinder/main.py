@@ -44,6 +44,9 @@ async def lifespan(app: FastAPI):
     _tg_app.add_handler(build_sealed_handler())
     register_handlers(_tg_app)
 
+    await _tg_app.initialize()
+    await _tg_app.start()
+
     if settings.is_production:
         # Webhook mode: Telegram sends updates to our server
         await _tg_app.bot.set_webhook(
@@ -53,8 +56,6 @@ async def lifespan(app: FastAPI):
         logger.info("Telegram webhook set at %s/webhooks/telegram", settings.base_url)
     else:
         # Long polling for local development
-        await _tg_app.initialize()
-        await _tg_app.start()
         await _tg_app.updater.start_polling(drop_pending_updates=True)
         logger.info("Telegram bot started in polling mode")
 
@@ -72,7 +73,7 @@ async def lifespan(app: FastAPI):
     if _tg_app:
         if not settings.is_production:
             await _tg_app.updater.stop()
-            await _tg_app.stop()
+        await _tg_app.stop()
         await _tg_app.shutdown()
 
 
