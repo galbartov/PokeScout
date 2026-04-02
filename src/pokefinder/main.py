@@ -8,7 +8,7 @@ from __future__ import annotations
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from telegram.ext import Application
 
@@ -93,7 +93,7 @@ app.include_router(setup_router)
 
 
 @app.post("/webhooks/telegram")
-async def telegram_webhook(request) -> dict:
+async def telegram_webhook(request: Request) -> dict:
     """Receive Telegram webhook updates (production mode only)."""
     from telegram import Update
     data = await request.json()
