@@ -4,9 +4,9 @@ export const strings = {
   },
   hero: {
     headline: 'Your Personal Pokémon TCG Deal Hunter.',
-    sub: 'TCG Scout monitors eBay 24/7 and alerts you on Telegram the moment a card or sealed product drops below your target price.',
+    sub: 'TCG Scout monitors eBay & TCGPlayer 24/7 and alerts you on Telegram the moment a card or sealed product drops below your target price.',
     cta: 'Start for Free on Telegram',
-    badge: 'Live on eBay 24/7',
+    badge: 'Live on eBay & TCGPlayer 24/7',
     smallPrint: '10 free alerts, no credit card required',
   },
   how: {
@@ -20,12 +20,12 @@ export const strings = {
       {
         num: '02',
         title: 'Set your target price',
-        body: 'Enter the max you\'re willing to pay. Live market prices are shown as a reference so you know what\'s fair.',
+        body: 'Enter the max you\'re willing to pay and we\'ll watch eBay and TCGPlayer for anything under it.',
       },
       {
         num: '03',
         title: 'Get alerted instantly',
-        body: 'The moment a matching listing or ending auction appears on eBay, you get a Telegram message with a direct link.',
+        body: 'The moment a matching listing appears on eBay or TCGPlayer, you get a Telegram message with a direct link.',
       },
     ],
   },
@@ -33,11 +33,10 @@ export const strings = {
     title: 'Everything a Collector Needs',
     items: [
       { icon: '', title: 'Live alerts every 7 min', body: 'Listings are checked constantly. Be the first to grab the deal.' },
-      { icon: '', title: 'eBay worldwide', body: 'Covers eBay listings globally. Fixed price and auctions, all in one place.' },
+      { icon: '', title: 'eBay & TCGPlayer', body: 'Covers eBay listings globally and TCGPlayer marketplace. Fixed price and auctions, all in one place.' },
       { icon: '', title: 'Browse sets, alert any card', body: 'Use /browse to explore any TCG set and tap a card to create an alert. No typing needed.' },
       { icon: '', title: 'Auction alerts', body: 'Get alerted when an auction ends within 24h and the current bid is below your target price.' },
       { icon: '', title: 'Singles, sealed, graded, bulk', body: 'Filter by what you collect: single cards, sealed products, PSA/CGC graded, or bulk lots.' },
-      { icon: '', title: 'Presets with live prices', body: 'One-tap presets for Charizard ex SIR, Umbreon VMAX Alt Art, and more. Thresholds auto-set from TCGPlayer.' },
     ],
   },
   pricing: {
@@ -52,7 +51,7 @@ export const strings = {
       'Up to 10 saved alerts on free plan',
       'Up to 50 saved alerts on Pro',
       'Unlimited notifications on Pro',
-      'eBay worldwide — fixed price & auctions',
+      'eBay & TCGPlayer — fixed price & auctions',
       'Singles, sealed, graded & bulk',
       'Auction ending-soon alerts',
       'Condition, shipping & seller trust info',
@@ -66,7 +65,7 @@ export const strings = {
     items: [
       {
         q: 'Which eBay listings do you monitor?',
-        a: 'We monitor all eBay listings worldwide, both fixed price and auctions. New categories are added regularly.',
+        a: 'We monitor all eBay listings worldwide and TCGPlayer marketplace, both fixed price and auctions. New sources are added regularly.',
       },
       {
         q: 'How do auction alerts work?',

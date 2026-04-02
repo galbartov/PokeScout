@@ -117,13 +117,13 @@ function Step3Mockup() {
           SV 151 ETB — Sealed
         </div>
         <div style={{ fontSize: '0.72rem', color: '#c0c0d0', marginBottom: 6, fontFamily: 'var(--font-inter)' }}>
-          $89 · Chicago · eBay
+          $89 · TCGPlayer
         </div>
         <div style={{
           background: 'var(--accent-teal)', color: '#0a0a14', borderRadius: 8,
           padding: '5px 10px', fontSize: '0.7rem', fontWeight: 700,
           textAlign: 'center' as const, fontFamily: 'var(--font-inter)',
-        }}>→ View on eBay</div>
+        }}>→ View on TCGPlayer</div>
       </div>
       <div style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', textAlign: 'center' as const, marginTop: 8, fontFamily: 'var(--font-inter)' }}>
         3 minutes ago
