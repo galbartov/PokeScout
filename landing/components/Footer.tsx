@@ -1,7 +1,7 @@
 'use client';
 import { strings } from '@/lib/i18n';
 
-const BOT_URL = 'https://t.me/TCG ScoutBot';
+const BOT_URL = 'https://t.me/PokeScoutBot';
 
 export default function Footer() {
   return (

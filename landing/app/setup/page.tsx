@@ -26,7 +26,7 @@ interface Alert {
 /* ── Config ─────────────────────────────────────────────────────────────────── */
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
-const BOT_URL = 'https://t.me/TCG ScoutBot';
+const BOT_URL = 'https://t.me/PokeScoutBot';
 
 /* ── API helpers ────────────────────────────────────────────────────────────── */
 

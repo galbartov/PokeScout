@@ -1,7 +1,7 @@
 'use client';
 import { strings } from '@/lib/i18n';
 
-const BOT_URL = 'https://t.me/TCG ScoutBot';
+const BOT_URL = 'https://t.me/PokeScoutBot';
 
 const PokeballIcon = () => (
   <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
@@ -34,7 +34,7 @@ export default function Navbar() {
           color: 'var(--text-primary)',
           letterSpacing: '-0.02em',
         }}>
-          Poke<span style={{ color: 'var(--accent-gold)' }}>Scout</span>
+          TCG <span style={{ color: 'var(--accent-gold)' }}>Scout</span>
         </span>
       </div>
 

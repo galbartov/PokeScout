@@ -2,7 +2,7 @@
 import { strings } from '@/lib/i18n';
 import { useEffect, useRef } from 'react';
 
-const BOT_URL = 'https://t.me/TCG ScoutBot';
+const BOT_URL = 'https://t.me/PokeScoutBot';
 
 export default function FinalCTA() {
   const ref = useRef<HTMLElement>(null);

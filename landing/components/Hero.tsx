@@ -1,7 +1,7 @@
 'use client';
 import { strings } from '@/lib/i18n';
 
-const BOT_URL = 'https://t.me/TCG ScoutBot';
+const BOT_URL = 'https://t.me/PokeScoutBot';
 
 const CARDS = [
   { video: '/charizard.mp4', alt: 'Charizard ex SIR',  rotate: '-18deg', translateX: '-140%', translateY: '-60%', zIndex: 1, floatCls: 'hero-card-f1' },
