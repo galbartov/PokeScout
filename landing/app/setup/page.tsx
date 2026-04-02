@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 
 /* ── Types ─────────────────────────────────────────────────────────────────── */
@@ -338,7 +338,7 @@ function AlertRow({ alert, onRemove }: { alert: Alert; onRemove: () => void }) {
 
 /* ── Main page ──────────────────────────────────────────────────────────────── */
 
-export default function SetupPage() {
+function SetupPageInner() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token') ?? '';
 
@@ -987,5 +987,13 @@ export default function SetupPage() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function SetupPage() {
+  return (
+    <Suspense>
+      <SetupPageInner />
+    </Suspense>
   );
 }
