@@ -63,10 +63,23 @@ function SourcesDemo() {
       </div>
       <div style={{
         display: 'flex', alignItems: 'center', gap: 14,
-        background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.06)',
-        borderRadius: 14, padding: '10px 16px', fontSize: '0.78rem', color: 'var(--text-secondary)',
+        background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(9,104,246,0.3)',
+        borderRadius: 14, padding: '12px 16px',
       }}>
-        More marketplaces coming soon
+        <div style={{
+          width: 40, height: 40, borderRadius: 10, flexShrink: 0,
+          background: '#fff',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          overflow: 'hidden', padding: 4,
+        }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/tcgplayer-logo.svg" alt="TCGPlayer" style={{ width: 32, height: 'auto', objectFit: 'contain' }} />
+        </div>
+        <div>
+          <div style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--text-primary)' }}>TCGPlayer — Marketplace</div>
+          <div style={{ fontSize: '0.74rem', color: 'var(--text-secondary)', marginTop: 2 }}>Singles & sealed from verified sellers</div>
+        </div>
+        <span style={{ marginInlineStart: 'auto', width: 8, height: 8, borderRadius: '50%', background: 'var(--accent-teal)', boxShadow: '0 0 6px var(--accent-teal)', flexShrink: 0 }} />
       </div>
     </div>
   );
