@@ -75,18 +75,25 @@ function Step1Mockup() {
 function Step2Mockup() {
   return (
     <PhoneMockup>
-      {/* ETB box art */}
+      {/* Card image */}
       <div style={{
         borderRadius: 8, marginBottom: 8, overflow: 'hidden',
         border: '1px solid rgba(245,183,49,0.2)',
         background: '#1a1a3e',
+        display: 'flex', justifyContent: 'center',
       }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/sealed/sv-151-etb.jpg"
-          alt="Scarlet & Violet 151 Elite Trainer Box"
-          style={{ width: '100%', display: 'block' }}
+          src="/pikachu-ex-276.jpg"
+          alt="Pikachu ex 276/217"
+          style={{ width: '70%', display: 'block' }}
         />
+      </div>
+      <div style={{
+        fontSize: '0.68rem', color: 'var(--text-secondary)',
+        fontFamily: 'var(--font-inter)', marginBottom: 4, textAlign: 'center' as const,
+      }}>
+        Pikachu ex · 276/217 · ME: Ascended Heroes
       </div>
       <div style={{
         background: 'rgba(245,183,49,0.07)',
@@ -95,7 +102,7 @@ function Step2Mockup() {
         fontSize: '0.72rem', color: 'var(--text-secondary)',
         fontFamily: 'var(--font-inter)',
       }}>
-        <span style={{ color: 'var(--accent-gold)', fontWeight: 700 }}>Last sold on eBay: </span>~$58
+        <span style={{ color: 'var(--accent-gold)', fontWeight: 700 }}>Last sold on eBay: </span>~$665
       </div>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
         <TgButton label="Alert on this item" selected />
@@ -114,10 +121,14 @@ function Step3Mockup() {
         borderRadius: 12, padding: '10px 12px', marginTop: 4,
       }}>
         <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--accent-teal)', marginBottom: 4, fontFamily: 'var(--font-inter)' }}>
-          SV 151 ETB — Sealed
+          Pikachu ex 276/217 — ASC
         </div>
-        <div style={{ fontSize: '0.72rem', color: '#c0c0d0', marginBottom: 6, fontFamily: 'var(--font-inter)' }}>
-          $89 · TCGPlayer
+        <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+          <span style={{ fontSize: '0.72rem', color: '#c0c0d0', fontFamily: 'var(--font-inter)' }}>$600 · TCGPlayer</span>
+          <span style={{
+            fontSize: '0.62rem', background: 'rgba(0,212,170,0.15)', color: 'var(--accent-teal)',
+            padding: '1px 7px', borderRadius: 20, fontWeight: 700, fontFamily: 'var(--font-inter)',
+          }}>−9.8%</span>
         </div>
         <div style={{
           background: 'var(--accent-teal)', color: '#0a0a14', borderRadius: 8,
