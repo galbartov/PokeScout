@@ -32,7 +32,7 @@ async def main():
         msg = await bot.send_animation(
             chat_id=ADMIN_ID,
             animation=f,
-            caption="🎬 PokeScout bot demo",
+            caption="🎬 TCG Scout bot demo",
         )
 
     print(f"Sent! Message ID: {msg.message_id}")

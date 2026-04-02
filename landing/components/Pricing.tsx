@@ -2,7 +2,7 @@
 import { strings } from '@/lib/i18n';
 import { useEffect, useRef } from 'react';
 
-const BOT_URL = 'https://t.me/PokeScoutBot';
+const BOT_URL = 'https://t.me/TCG ScoutBot';
 
 export default function Pricing() {
   const ref = useRef<HTMLElement>(null);

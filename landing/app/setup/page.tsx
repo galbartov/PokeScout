@@ -26,7 +26,7 @@ interface Alert {
 /* ── Config ─────────────────────────────────────────────────────────────────── */
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
-const BOT_URL = 'https://t.me/PokeScoutBot';
+const BOT_URL = 'https://t.me/TCG ScoutBot';
 
 /* ── API helpers ────────────────────────────────────────────────────────────── */
 
@@ -536,7 +536,7 @@ function SetupPageInner() {
               fontFamily: "'Syne', sans-serif",
               letterSpacing: '0.02em',
             }}>
-              Open PokeScout →
+              Open TCG Scout →
             </a>
           </div>
         </div>

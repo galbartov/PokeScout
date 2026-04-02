@@ -47,9 +47,9 @@ function PhoneMockup({ children }: { children: React.ReactNode }) {
         borderBottom: '1px solid rgba(255,255,255,0.06)',
       }}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/bot-avatar.png" alt="PokeScout" style={{ width: 32, height: 32, borderRadius: '50%', flexShrink: 0, objectFit: 'cover' }} />
+        <img src="/bot-avatar.png" alt="TCG Scout" style={{ width: 32, height: 32, borderRadius: '50%', flexShrink: 0, objectFit: 'cover' }} />
         <div>
-          <div style={{ fontSize: '0.78rem', fontWeight: 600, color: '#f0f0f0', fontFamily: 'var(--font-inter)' }}>PokeScout</div>
+          <div style={{ fontSize: '0.78rem', fontWeight: 600, color: '#f0f0f0', fontFamily: 'var(--font-inter)' }}>TCG Scout</div>
           <div style={{ fontSize: '0.65rem', color: 'var(--accent-teal)', fontFamily: 'var(--font-inter)' }}>● online</div>
         </div>
       </div>

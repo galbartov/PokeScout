@@ -4,7 +4,7 @@ export const strings = {
   },
   hero: {
     headline: 'Your Personal Pokémon TCG Deal Hunter.',
-    sub: 'PokeScout monitors eBay 24/7 and alerts you on Telegram the moment a card or sealed product drops below your target price.',
+    sub: 'TCG Scout monitors eBay 24/7 and alerts you on Telegram the moment a card or sealed product drops below your target price.',
     cta: 'Start for Free on Telegram',
     badge: 'Live on eBay 24/7',
     smallPrint: '10 free alerts, no credit card required',
@@ -46,7 +46,7 @@ export const strings = {
     freeLine: '10 free alerts to get started',
     thenLine: 'then $9.99 / month for Pro',
     savingsHeadline: 'Serious collectors save hundreds',
-    savingsBody: 'A single good deal on a Charizard ex SIR or an ETB can save you $50-$200. At $9.99/month, PokeScout pays for itself on day one.',
+    savingsBody: 'A single good deal on a Charizard ex SIR or an ETB can save you $50-$200. At $9.99/month, TCG Scout pays for itself on day one.',
     features: [
       'First 10 deal alerts free, no card needed',
       'Up to 10 saved alerts on free plan',
@@ -82,7 +82,7 @@ export const strings = {
       },
       {
         q: 'Do I need a Telegram account?',
-        a: 'Yes. PokeScout is a Telegram bot. If you don\'t have Telegram yet, it\'s free to download and takes 30 seconds to sign up.',
+        a: 'Yes. TCG Scout is a Telegram bot. If you don\'t have Telegram yet, it\'s free to download and takes 30 seconds to sign up.',
       },
       {
         q: 'Is my payment secure?',
@@ -92,12 +92,12 @@ export const strings = {
   },
   finalCta: {
     headline: 'Ready to stop missing deals?',
-    cta: 'Open PokeScout on Telegram',
+    cta: 'Open TCG Scout on Telegram',
   },
   footer: {
     tagline: 'Built for Pokémon TCG collectors worldwide.',
     links: ['Telegram Bot', 'Privacy Policy', 'Contact'],
-    disclaimer: 'PokeScout is not affiliated with Nintendo, The Pokémon Company, or Wizards of the Coast.',
+    disclaimer: 'TCG Scout is not affiliated with Nintendo, The Pokémon Company, or Wizards of the Coast.',
   },
 };
 

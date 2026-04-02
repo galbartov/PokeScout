@@ -1,6 +1,6 @@
 {
-  "welcome": "Hello! Welcome to PokeScout!\nI'll help you find deals on Pokémon cards and sealed products on eBay.",
-  "onboarding_browse": "*Welcome to PokeScout!*\n\nThe easiest way to get started:\n\n/browse — explore single cards by series and set\n/sealed — browse ETBs and booster boxes\n\nTap *Alert me* on any product and I'll notify you the moment a deal appears on eBay below your price!\n\nUseful commands:\n/browse – Single cards\n/sealed – Sealed products\n/preferences – Manage alerts\n/status – Subscription status\n/help – Help",
+  "welcome": "Hello! Welcome to TCG Scout!\nI'll help you find deals on Pokémon cards and sealed products on eBay.",
+  "onboarding_browse": "*Welcome to TCG Scout!*\n\nThe easiest way to get started:\n\n/browse — explore single cards by series and set\n/sealed — browse ETBs and booster boxes\n\nTap *Alert me* on any product and I'll notify you the moment a deal appears on eBay below your price!\n\nUseful commands:\n/browse – Single cards\n/sealed – Sealed products\n/preferences – Manage alerts\n/status – Subscription status\n/help – Help",
 
   "choose_categories": "What are you looking for? Pick categories (multiple allowed):",
   "category_sealed": "Sealed products",
@@ -65,7 +65,7 @@
   "delete_preference": "Delete preference",
   "back": "Back",
 
-  "help_text": "*PokeScout — Help*\n\n/browse – Browse single cards by series and set\n/sealed – Browse ETBs and booster boxes\n/preferences – View and edit preferences\n/status – View subscription status\n/subscribe – Upgrade to paid plan\n/help – Show this help",
+  "help_text": "*TCG Scout — Help*\n\n/browse – Browse single cards by series and set\n/sealed – Browse ETBs and booster boxes\n/preferences – View and edit preferences\n/status – View subscription status\n/subscribe – Upgrade to paid plan\n/help – Show this help",
 
   "admin_stats": "*Admin Stats:*\n\nActive users: {users}\nSubscribers: {subscribed}\nNotifications today: {notifs_today}\nActive preferences: {prefs}\n\neBay: {ebay_status}",
   "admin_health": "*Scraper Health:*\n\n{runs}",

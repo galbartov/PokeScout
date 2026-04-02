@@ -202,7 +202,7 @@ async def run_deadmans_switch() -> None:
         age_minutes = (datetime.now(timezone.utc) - dt).total_seconds() / 60
         if age_minutes > 15:
             msg = (
-                f"⚠️ *PokeScout alert*\n"
+                f"⚠️ *TCG Scout alert*\n"
                 f"Last eBay scrape completed {age_minutes:.0f} minutes ago.\n"
                 f"The scraper may be down."
             )

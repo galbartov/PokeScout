@@ -1,7 +1,7 @@
 'use client';
 import { strings } from '@/lib/i18n';
 
-const BOT_URL = 'https://t.me/PokeScoutBot';
+const BOT_URL = 'https://t.me/TCG ScoutBot';
 
 export default function Footer() {
   return (
@@ -42,7 +42,7 @@ export default function Footer() {
           {strings.footer.disclaimer}
         </p>
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.75rem', opacity: 0.4 }}>
-          © 2025 PokeScout
+          © 2025 TCG Scout
         </p>
       </div>
     </footer>

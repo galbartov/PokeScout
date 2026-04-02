@@ -5,7 +5,7 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800'], variable: '--font-inter' });
 
 export const metadata: Metadata = {
-  title: 'PokeScout — Your Personal Pokémon TCG Deal Hunter',
+  title: 'TCG Scout — Your Personal Pokémon TCG Deal Hunter',
   description: 'Real-time Telegram alerts for Pokémon cards, ETBs, and graded slabs listed below market price on eBay worldwide.',
   icons: {
     icon: [
@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   openGraph: {
-    title: 'PokeScout — Your Personal Pokémon TCG Deal Hunter',
+    title: 'TCG Scout — Your Personal Pokémon TCG Deal Hunter',
     description: 'Never overpay for a Pokémon card again. Get Telegram alerts the moment a deal appears on eBay.',
     type: 'website',
     images: [{ url: '/og-image.png', width: 1200, height: 630 }],

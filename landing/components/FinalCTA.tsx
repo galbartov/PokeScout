@@ -2,7 +2,7 @@
 import { strings } from '@/lib/i18n';
 import { useEffect, useRef } from 'react';
 
-const BOT_URL = 'https://t.me/PokeScoutBot';
+const BOT_URL = 'https://t.me/TCG ScoutBot';
 
 export default function FinalCTA() {
   const ref = useRef<HTMLElement>(null);
@@ -52,7 +52,7 @@ export default function FinalCTA() {
           color: 'var(--accent-gold)', textTransform: 'uppercase',
           marginBottom: 24, opacity: 0.7,
         }}>
-          PokeScout
+          TCG Scout
         </div>
 
         <h2 style={{

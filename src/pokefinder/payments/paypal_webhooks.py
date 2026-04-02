@@ -96,7 +96,7 @@ async def paypal_webhook(request: Request) -> Response:
                     bot = Bot(token=settings.telegram_bot_token)
                     await bot.send_message(
                         chat_id=user["telegram_id"],
-                        text="Your PokeScout subscription is now active! You'll receive unlimited deal alerts.",
+                        text="Your TCG Scout subscription is now active! You'll receive unlimited deal alerts.",
                     )
                 except Exception:
                     pass
