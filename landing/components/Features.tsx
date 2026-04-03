@@ -5,34 +5,97 @@ import { useEffect, useRef, useState } from 'react';
 /* ── Demo components ────────────────────────────────── */
 
 function AlertsDemo() {
-  const items = [
-    { name: 'Charizard ex SIR', price: '$312', hot: true },
-    { name: 'Umbreon VMAX Alt Art', price: '$1,290', hot: false },
-    { name: 'Pikachu 151 IR', price: '$59', hot: false },
+  const CYCLE = 4000;
+  const [tick, setTick] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const rafRef = useRef<number | null>(null);
+  const startRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const id = setInterval(() => setTick(t => t + 1), CYCLE);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    startRef.current = null;
+    setProgress(0);
+    const animate = (now: number) => {
+      if (!startRef.current) startRef.current = now;
+      const p = Math.min((now - startRef.current) / CYCLE, 1);
+      setProgress(p);
+      if (p < 1) rafRef.current = requestAnimationFrame(animate);
+    };
+    rafRef.current = requestAnimationFrame(animate);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [tick]);
+
+  const listings = [
+    { name: 'Pikachu ex 276/217', price: '$600', platform: 'TCGPlayer', platformColor: '#0968F6' },
+    { name: 'Mega Gengar ex 284', price: '$890', platform: 'eBay', platformColor: '#e53238' },
+    { name: 'Ascended Heroes ETB', price: '$310', platform: 'eBay', platformColor: '#e53238' },
   ];
+  const thresholds = [0.62, 0.76, 0.90];
+
+  const totalSeconds = Math.floor(progress * 420);
+  const mins = Math.floor(totalSeconds / 60);
+  const secs = totalSeconds % 60;
+  const done = progress >= 0.95;
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      {items.map((item, i) => (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <style>{`
+        @keyframes pop-in {
+          0%   { opacity: 0; transform: translateY(6px) scale(0.97); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
+
+      {/* Timer */}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        marginBottom: 4,
+      }}>
+        <span style={{ fontSize: '0.72rem', color: 'var(--text-secondary)' }}>scanning markets…</span>
+        <span style={{
+          fontSize: '1rem', fontWeight: 800, fontFamily: 'monospace',
+          color: done ? 'var(--accent-teal)' : 'var(--accent-gold)',
+          transition: 'color 0.3s',
+        }}>
+          {mins}:{secs.toString().padStart(2, '0')} <span style={{ fontSize: '0.65rem', opacity: 0.5 }}>/ 7:00</span>
+        </span>
+      </div>
+      <div style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 4, height: 4, marginBottom: 4 }}>
+        <div style={{
+          width: `${progress * 100}%`, height: '100%',
+          background: done ? 'var(--accent-teal)' : 'var(--accent-gold)',
+          borderRadius: 4, transition: 'background 0.3s',
+        }} />
+      </div>
+
+      {/* Listings */}
+      {listings.map((item, i) => progress >= thresholds[i] ? (
         <div key={i} style={{
           display: 'flex', alignItems: 'center', gap: 10,
-          background: i === 0 ? 'rgba(0,212,170,0.06)' : 'rgba(255,255,255,0.03)',
-          border: `1px solid ${i === 0 ? 'rgba(0,212,170,0.2)' : 'rgba(255,255,255,0.06)'}`,
+          background: 'rgba(0,212,170,0.06)', border: '1px solid rgba(0,212,170,0.2)',
           borderRadius: 12, padding: '10px 14px',
-          fontSize: '0.82rem',
+          animation: 'pop-in 0.3s ease forwards',
         }}>
           <span style={{
             width: 8, height: 8, borderRadius: '50%', flexShrink: 0,
-            background: i === 0 ? 'var(--accent-teal)' : 'rgba(0,212,170,0.2)',
-            boxShadow: i === 0 ? '0 0 8px var(--accent-teal)' : 'none',
-            animation: i === 0 ? 'pulse-dot 1.6s ease-in-out infinite' : 'none',
+            background: 'var(--accent-teal)', boxShadow: '0 0 8px var(--accent-teal)',
           }} />
-          <span style={{ flex: 1, color: 'var(--text-secondary)', fontFamily: 'monospace' }}>{item.name}</span>
-          <span style={{ color: 'var(--text-primary)', fontWeight: 700 }}>{item.price}</span>
-          {i === 0 && <span style={{
-            fontSize: '0.68rem', background: 'rgba(0,212,170,0.15)', color: 'var(--accent-teal)',
-            padding: '2px 10px', borderRadius: 20,
-          }}>new</span>}
+          <span style={{ flex: 1, color: 'var(--text-secondary)', fontFamily: 'monospace', fontSize: '0.82rem' }}>{item.name}</span>
+          <span style={{ color: 'var(--text-primary)', fontWeight: 700, fontSize: '0.82rem' }}>{item.price}</span>
+          <span style={{
+            fontSize: '0.62rem', color: item.platformColor, background: `${item.platformColor}22`,
+            padding: '2px 8px', borderRadius: 20, flexShrink: 0,
+          }}>{item.platform}</span>
         </div>
+      ) : (
+        <div key={i} style={{
+          height: 42, background: 'rgba(255,255,255,0.02)',
+          border: '1px solid rgba(255,255,255,0.05)', borderRadius: 12,
+        }} />
       ))}
     </div>
   );
