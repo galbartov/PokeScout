@@ -1,6 +1,6 @@
 'use client';
 import { strings } from '@/lib/i18n';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 /* ── Telegram UI primitives ───────────────────────── */
 
@@ -59,14 +59,110 @@ function PhoneMockup({ children }: { children: React.ReactNode }) {
 }
 
 function Step1Mockup() {
+  const CYCLE = 4000; // ms for one full cycle
+  const [tick, setTick] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setTick(t => t + 1), CYCLE);
+    return () => clearInterval(id);
+  }, []);
+
+  // progress 0→1 over CYCLE ms, then reset
+  const [progress, setProgress] = useState(0);
+  const rafRef = useRef<number | null>(null);
+  const startRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    startRef.current = null;
+    setProgress(0);
+    const animate = (now: number) => {
+      if (!startRef.current) startRef.current = now;
+      const p = Math.min((now - startRef.current) / CYCLE, 1);
+      setProgress(p);
+      if (p < 1) rafRef.current = requestAnimationFrame(animate);
+    };
+    rafRef.current = requestAnimationFrame(animate);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [tick]);
+
+  const listings = [
+    { name: 'Pikachu ex 276/217', price: '$600', platform: 'TCGPlayer', color: '#0968F6' },
+    { name: 'Mega Gengar ex 284', price: '$890', platform: 'eBay', color: '#e53238' },
+    { name: 'Ascended Heroes ETB', price: '$310', platform: 'eBay', color: '#e53238' },
+  ];
+
+  // each listing appears after 60%, 75%, 90% progress
+  const thresholds = [0.62, 0.76, 0.90];
+
+  // minutes shown on timer: animate 0:00 → 7:00
+  const totalSeconds = Math.floor(progress * 420);
+  const mins = Math.floor(totalSeconds / 60);
+  const secs = totalSeconds % 60;
+
   return (
     <PhoneMockup>
-      <TgBubble text="What are you looking for?" />
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginTop: 6 }}>
-        <TgButton label="Single Cards" selected />
-        <TgButton label="ETB / Booster Box" />
-        <TgButton label="Graded Cards" />
-        <TgButton label="Lots / Bulk" />
+      <style>{`
+        @keyframes pop-in {
+          0%   { opacity: 0; transform: translateY(8px) scale(0.95); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
+
+      {/* Timer */}
+      <div style={{ textAlign: 'center' as const, marginBottom: 12 }}>
+        <div style={{ fontSize: '0.62rem', color: 'var(--text-secondary)', marginBottom: 4, fontFamily: 'var(--font-inter)' }}>
+          scanning markets…
+        </div>
+        <div style={{
+          fontSize: '1.6rem', fontWeight: 800, fontFamily: 'monospace',
+          color: progress >= 0.95 ? 'var(--accent-teal)' : 'var(--accent-gold)',
+          letterSpacing: 2,
+          transition: 'color 0.3s',
+        }}>
+          {mins}:{secs.toString().padStart(2, '0')}
+        </div>
+        {/* Progress bar */}
+        <div style={{ background: 'rgba(255,255,255,0.08)', borderRadius: 4, height: 4, marginTop: 6 }}>
+          <div style={{
+            width: `${progress * 100}%`, height: '100%',
+            background: progress >= 0.95 ? 'var(--accent-teal)' : 'var(--accent-gold)',
+            borderRadius: 4, transition: 'background 0.3s',
+          }} />
+        </div>
+      </div>
+
+      {/* Listings popping in */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        {listings.map((item, i) => progress >= thresholds[i] ? (
+          <div key={i} style={{
+            display: 'flex', alignItems: 'center', gap: 8,
+            background: 'rgba(0,212,170,0.06)', border: '1px solid rgba(0,212,170,0.2)',
+            borderRadius: 10, padding: '7px 10px',
+            animation: 'pop-in 0.3s ease forwards',
+          }}>
+            <span style={{
+              width: 7, height: 7, borderRadius: '50%', flexShrink: 0,
+              background: 'var(--accent-teal)', boxShadow: '0 0 6px var(--accent-teal)',
+            }} />
+            <span style={{ flex: 1, fontSize: '0.68rem', color: 'var(--text-secondary)', fontFamily: 'var(--font-inter)' }}>
+              {item.name}
+            </span>
+            <span style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-inter)' }}>
+              {item.price}
+            </span>
+            <span style={{
+              fontSize: '0.58rem', color: item.color, background: `${item.color}22`,
+              padding: '1px 6px', borderRadius: 20, flexShrink: 0, fontFamily: 'var(--font-inter)',
+            }}>
+              {item.platform}
+            </span>
+          </div>
+        ) : (
+          <div key={i} style={{
+            height: 34, background: 'rgba(255,255,255,0.02)',
+            border: '1px solid rgba(255,255,255,0.05)', borderRadius: 10,
+          }} />
+        ))}
       </div>
     </PhoneMockup>
   );
