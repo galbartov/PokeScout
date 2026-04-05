@@ -12,7 +12,7 @@ export default function TermsPage() {
       <p style={{ color: 'var(--text-secondary)', marginBottom: 48, fontSize: '0.9rem' }}>Last updated: April 5, 2026</p>
 
       <Section title="1. About TCG Scout">
-        <p>TCG Scout ("the Service") is operated by Gal Bartov ("we", "us", "our"), an individual based in Israel. By accessing or using TCG Scout, including via our Telegram bot (@PokeScoutBot) or website, you agree to these Terms of Service.</p>
+        <p>TCG Scout ("the Service") is operated by TCG Scout ("we", "us", "our"). By accessing or using TCG Scout, including via our Telegram bot (@PokeScoutBot) or website, you agree to these Terms of Service.</p>
         <p>TCG Scout monitors third-party marketplaces (including eBay and TCGPlayer) and sends you Telegram alerts when listings match your saved preferences. We are not a marketplace, seller, or broker. We do not sell, buy, or handle any physical goods.</p>
       </Section>
 
@@ -27,7 +27,7 @@ export default function TermsPage() {
       </Section>
 
       <Section title="4. Refund Policy">
-        <p>All sales are final. We do not offer refunds except where required by applicable law or where Paddle's own refund policies apply. If you believe you were charged in error, contact us at galbartov17@gmail.com within 7 days of the charge.</p>
+        <p>We offer a 14-day refund window. If you are not satisfied, contact us at galbartov17@gmail.com within 14 days of your payment and we will issue a full refund, no questions asked.</p>
       </Section>
 
       <Section title="5. Acceptable Use">
@@ -61,7 +61,7 @@ export default function TermsPage() {
       </Section>
 
       <Section title="10. Limitation of Liability">
-        <p>To the maximum extent permitted by applicable law, Gal Bartov shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of or inability to use the Service, including missed deals, incorrect price data, or third-party marketplace issues. Our total liability to you for any claim arising from these terms or the Service shall not exceed the amount you paid us in the 30 days preceding the claim.</p>
+        <p>To the maximum extent permitted by applicable law, TCG Scout shall not be liable for any indirect, incidental, special, or consequential damages arising from your use of or inability to use the Service, including missed deals, incorrect price data, or third-party marketplace issues. Our total liability to you for any claim arising from these terms or the Service shall not exceed the amount you paid us in the 30 days preceding the claim.</p>
       </Section>
 
       <Section title="11. Changes to These Terms">
