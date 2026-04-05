@@ -60,15 +60,20 @@ function PhoneMockup({ children }: { children: React.ReactNode }) {
 
 function Step1Mockup() {
   return (
-    <PhoneMockup>
-      <TgBubble text="What are you looking for?" />
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 5, marginTop: 6 }}>
-        <TgButton label="Single Cards" selected />
-        <TgButton label="ETB / Booster Box" />
-        <TgButton label="Graded Cards" />
-        <TgButton label="Lots / Bulk" />
-      </div>
-    </PhoneMockup>
+    <div style={{
+      width: '100%', maxWidth: 240,
+      borderRadius: 20, overflow: 'hidden',
+      boxShadow: '0 24px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06)',
+    }}>
+      <video
+        src="/demo.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        style={{ width: '100%', display: 'block' }}
+      />
+    </div>
   );
 }
 
