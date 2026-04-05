@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import { useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 
 const PADDLE_CLIENT_TOKEN = 'live_150105a35d9845302d9c320f338';
 const PADDLE_PRICE_ID = 'pri_01knfhz5hksf3xqy1h4dyevt45';
