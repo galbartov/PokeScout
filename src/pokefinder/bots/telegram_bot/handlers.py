@@ -285,7 +285,6 @@ async def subscribe_command(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> N
     url = svc.generate_checkout_url(user)
     await update.message.reply_text(
         t("subscribe_prompt", "en", checkout_url=url),
-        parse_mode=ParseMode.MARKDOWN,
     )
 
 
