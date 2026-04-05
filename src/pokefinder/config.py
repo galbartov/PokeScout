@@ -36,11 +36,16 @@ class Settings(BaseSettings):
     stripe_webhook_secret: str = ""
     stripe_price_id: str = ""
 
-    # PayPal
+    # PayPal (legacy)
     paypal_client_id: str = ""
     paypal_secret: str = ""
     paypal_plan_id: str = ""
     paypal_webhook_id: str = ""
+
+    # Paddle
+    paddle_client_token: str = ""
+    paddle_price_id: str = ""
+    paddle_webhook_secret: str = ""
 
     # App
     app_env: str = "development"

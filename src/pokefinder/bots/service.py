@@ -132,15 +132,9 @@ class BotService:
         await queries.update_user(self.db, user_id, {"free_deals_used": current_used + 1})
 
     def generate_checkout_url(self, user: dict) -> str:
-        """Return a PayPal subscription approval URL for the configured plan."""
-        plan_id = settings.paypal_plan_id
-        if not plan_id:
-            return f"{settings.base_url}/subscribe"
+        """Return the Paddle checkout URL with user_id embedded."""
         user_id = user.get("id", "")
-        return (
-            f"https://www.paypal.com/webapps/billing/plans/subscribe"
-            f"?plan_id={plan_id}&custom_id={user_id}"
-        )
+        return f"https://tcg-scout.com/subscribe?user_id={user_id}"
 
     # ── Message formatting ────────────────────────────────────────────────────
 

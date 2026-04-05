@@ -20,7 +20,7 @@ from pokefinder.config import settings
 from pokefinder.db import get_client
 from pokefinder.db import queries
 from pokefinder.api.setup import router as setup_router
-from pokefinder.payments import stripe_router
+from pokefinder.payments import stripe_router, paddle_router
 from pokefinder.scheduler import build_scheduler
 
 logging.basicConfig(
@@ -89,6 +89,7 @@ app.add_middleware(
 # ── Webhook routes ────────────────────────────────────────────────────────────
 app.include_router(whatsapp_router)
 app.include_router(stripe_router)
+app.include_router(paddle_router)
 app.include_router(setup_router)
 
 
