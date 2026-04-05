@@ -95,7 +95,7 @@ export const strings = {
   },
   footer: {
     tagline: 'Built for Pokémon TCG collectors worldwide.',
-    links: ['Telegram Bot', 'Privacy Policy', 'Contact'],
+    links: ['Telegram Bot', 'Terms of Service', 'Contact'],
     disclaimer: 'TCG Scout is not affiliated with Nintendo, The Pokémon Company, or Wizards of the Coast.',
   },
 };

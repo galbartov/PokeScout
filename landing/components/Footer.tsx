@@ -29,7 +29,7 @@ export default function Footer() {
             style={{ color: 'var(--accent-gold)', textDecoration: 'none', fontSize: '0.9rem', fontWeight: 600 }}>
             {strings.footer.links[0]}
           </a>
-          <a href="#" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.9rem' }}>
+          <a href="/terms" style={{ color: 'var(--text-secondary)', textDecoration: 'none', fontSize: '0.9rem' }}>
             {strings.footer.links[1]}
           </a>
           <a href={BOT_URL} target="_blank" rel="noopener noreferrer"
