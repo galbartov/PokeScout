@@ -131,7 +131,7 @@ class BotService:
     async def increment_free_deals(self, user_id: str, current_used: int) -> None:
         await queries.update_user(self.db, user_id, {"free_deals_used": current_used + 1})
 
-    def generate_checkout_url(self, user: dict) -> str:
+    def generate_checkout_url(self, user: dict, locale: str = "en") -> str:
         """Return the Paddle checkout URL with user_id embedded."""
         user_id = user.get("id", "")
         return f"https://tcg-scout.com/subscribe?user_id={user_id}"
