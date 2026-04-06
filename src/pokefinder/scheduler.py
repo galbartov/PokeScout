@@ -133,9 +133,12 @@ async def run_ebay_scrape() -> None:
     )
 
     if new_ids:
-        from pokefinder.matching.engine import match_and_notify
-        sent = await match_and_notify(new_ids)
-        logger.info("eBay scrape: %d new listings, %d notifications sent", len(new_ids), sent)
+        try:
+            from pokefinder.matching.engine import match_and_notify
+            sent = await match_and_notify(new_ids)
+            logger.info("eBay scrape: %d new listings, %d notifications sent", len(new_ids), sent)
+        except Exception as e:
+            logger.error("eBay match_and_notify failed: %s", e, exc_info=True)
     else:
         logger.info("eBay scrape: no new listings")
 
@@ -162,9 +165,12 @@ async def run_tcgplayer_scrape() -> None:
     )
 
     if new_ids:
-        from pokefinder.matching.engine import match_and_notify
-        sent = await match_and_notify(new_ids)
-        logger.info("TCGPlayer scrape: %d new listings, %d notifications sent", len(new_ids), sent)
+        try:
+            from pokefinder.matching.engine import match_and_notify
+            sent = await match_and_notify(new_ids)
+            logger.info("TCGPlayer scrape: %d new listings, %d notifications sent", len(new_ids), sent)
+        except Exception as e:
+            logger.error("TCGPlayer match_and_notify failed: %s", e, exc_info=True)
     else:
         logger.info("TCGPlayer scrape: no new listings")
 
