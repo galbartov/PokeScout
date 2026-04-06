@@ -175,6 +175,15 @@ async def run_tcgplayer_scrape() -> None:
         logger.info("TCGPlayer scrape: no new listings")
 
 
+async def run_expiry_check() -> None:
+    """Check if recently notified listings have sold/expired and edit Telegram messages."""
+    try:
+        from pokefinder.notifications.expiry_checker import check_and_update_expired_listings
+        await check_and_update_expired_listings()
+    except Exception as e:
+        logger.error("Expiry check failed: %s", e, exc_info=True)
+
+
 async def run_cleanup() -> None:
     """Nightly job: delete listings older than 14 days to keep DB lean."""
     db = await get_client()
@@ -238,6 +247,14 @@ def build_scheduler() -> AsyncIOScheduler:
         trigger="interval",
         minutes=interval,
         id="tcgplayer_scrape",
+        max_instances=1,
+        coalesce=True,
+    )
+    scheduler.add_job(
+        run_expiry_check,
+        trigger="interval",
+        minutes=30,
+        id="expiry_check",
         max_instances=1,
         coalesce=True,
     )

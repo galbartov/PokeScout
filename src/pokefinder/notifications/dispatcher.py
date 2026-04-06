@@ -83,16 +83,18 @@ async def dispatch_notification(
     # ── Route to channels ─────────────────────────────────────────────────
     channels = user.get("notification_channels") or ["telegram"]
     any_success = False
+    telegram_message_id: int | None = None
 
     if "telegram" in channels and user.get("telegram_id"):
         from pokefinder.notifications import telegram as tg_notif
-        success = await tg_notif.send_deal(
+        tg_msg_id = await tg_notif.send_deal(
             telegram_id=user["telegram_id"],
             message_text=message,
             image_url=image_url,
         )
-        if success:
+        if tg_msg_id is not None:
             any_success = True
+            telegram_message_id = tg_msg_id
 
     if "whatsapp" in channels and user.get("whatsapp_phone"):
         from pokefinder.notifications import whatsapp as wa_notif
@@ -110,13 +112,16 @@ async def dispatch_notification(
 
     # ── Record in DB ──────────────────────────────────────────────────────
     try:
-        await queries.create_notification(db, {
+        notif_record: dict = {
             "user_id": user_id,
             "listing_id": listing_id,
             "preference_id": preference.get("id"),
             "channel": "+".join(channels),
             "status": "sent",
-        })
+        }
+        if telegram_message_id is not None:
+            notif_record["telegram_message_id"] = telegram_message_id
+        await queries.create_notification(db, notif_record)
     except Exception:
         pass  # Unique constraint violation is fine (race condition)
 

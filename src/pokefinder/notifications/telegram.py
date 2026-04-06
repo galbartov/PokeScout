@@ -24,20 +24,20 @@ async def send_deal(
     telegram_id: int,
     message_text: str,
     image_url: str | None = None,
-) -> bool:
-    """Send a deal notification. Returns True if successful."""
+) -> int | None:
+    """Send a deal notification. Returns message_id if successful, None on failure."""
     bot = _get_bot()
     try:
         if image_url:
             # Try passing URL directly first (faster, works for public images)
             try:
-                await bot.send_photo(
+                msg = await bot.send_photo(
                     chat_id=telegram_id,
                     photo=image_url,
                     caption=message_text,
                     parse_mode=ParseMode.MARKDOWN,
                 )
-                return True
+                return msg.message_id
             except Exception:
                 pass
 
@@ -49,41 +49,70 @@ async def send_deal(
                     image_bytes = img_resp.content
 
                 try:
-                    await bot.send_photo(
+                    msg = await bot.send_photo(
                         chat_id=telegram_id,
                         photo=image_bytes,
                         caption=message_text,
                         parse_mode=ParseMode.MARKDOWN,
                     )
                 except Exception:
-                    await bot.send_photo(
+                    msg = await bot.send_photo(
                         chat_id=telegram_id,
                         photo=image_bytes,
                         caption=message_text,
                         parse_mode=None,
                     )
-                return True
+                return msg.message_id
             except Exception as img_err:
                 logger.debug("Image send failed, falling back to text: %s", img_err)
 
         # Text-only — try Markdown first, fall back to plain text if parse fails
         try:
-            await bot.send_message(
+            msg = await bot.send_message(
                 chat_id=telegram_id,
                 text=message_text,
                 parse_mode=ParseMode.MARKDOWN,
                 disable_web_page_preview=False,
             )
-            return True
+            return msg.message_id
         except Exception:
-            await bot.send_message(
+            msg = await bot.send_message(
                 chat_id=telegram_id,
                 text=message_text,
                 parse_mode=None,
                 disable_web_page_preview=False,
             )
-            return True
+            return msg.message_id
 
     except Exception as e:
         logger.error("Failed to send Telegram notification to %s: %s", telegram_id, e)
-        return False
+        return None
+
+
+async def edit_deal(
+    telegram_id: int,
+    message_id: int,
+    new_text: str,
+) -> bool:
+    """Edit an existing message. Returns True if successful."""
+    bot = _get_bot()
+    try:
+        await bot.edit_message_caption(
+            chat_id=telegram_id,
+            message_id=message_id,
+            caption=new_text,
+            parse_mode=ParseMode.MARKDOWN,
+        )
+        return True
+    except Exception:
+        try:
+            await bot.edit_message_text(
+                chat_id=telegram_id,
+                message_id=message_id,
+                text=new_text,
+                parse_mode=ParseMode.MARKDOWN,
+            )
+            return True
+        except Exception as e:
+            logger.debug("Failed to edit Telegram message %s: %s", message_id, e)
+            return False
