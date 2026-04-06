@@ -143,6 +143,7 @@ class BotService:
         listing: dict,
         preference_name: str,
         market_price: float | None = None,
+        market_price_source: str | None = None,
     ) -> str:
         """Format a deal notification message for Telegram (Markdown-safe)."""
         price = listing.get("price")
@@ -165,10 +166,11 @@ class BotService:
         discount_line = ""
         if market_price and price and market_price > 0:
             pct = ((market_price - price) / market_price) * 100
+            source_tag = f" · {market_price_source}" if market_price_source else ""
             if pct >= 5:
-                discount_line = f"📉 *{pct:.0f}% below market* (market ~${market_price:,.0f})\n"
+                discount_line = f"📉 *{pct:.0f}% below market* (~${market_price:,.0f}{source_tag})\n"
             elif pct <= -5:
-                discount_line = f"📈 {abs(pct):.0f}% above market (market ~${market_price:,.0f})\n"
+                discount_line = f"📈 {abs(pct):.0f}% above market (~${market_price:,.0f}{source_tag})\n"
 
         # ── Condition ────────────────────────────────────────────────────
         condition = listing.get("condition")

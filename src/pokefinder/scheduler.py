@@ -87,6 +87,7 @@ async def _persist_listings(raw_listings: list[RawListing], platform: str) -> li
             "grading_company": grading_company,
             "grade_value": grade_value,
             "raw_data": raw.raw_data,
+            "market_price": raw.raw_data.get("marketPrice") if raw.raw_data else None,
         })
         if not raw.external_id:
             existing_titles.append({"title_normalized": normalized, "price": raw.price})

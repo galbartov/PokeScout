@@ -44,17 +44,21 @@ async def dispatch_notification(
     # ── Build message ─────────────────────────────────────────────────────
     pref_name = preference.get("name", "?")
 
-    # Fetch market price for deal quality signal (best-effort, non-blocking)
-    market_price: float | None = None
-    try:
-        from pokefinder.scrapers.ebay import get_last_sold_price
-        title = listing.get("title", "")
-        if title:
-            market_price = await get_last_sold_price(title)
-    except Exception:
-        pass
+    # Use stored TCGPlayer market price if available, otherwise fall back to eBay lookup
+    market_price: float | None = listing.get("market_price")
+    market_price_source: str | None = "TCGPlayer" if market_price else None
 
-    message = svc.format_deal_message(listing, pref_name, market_price=market_price)
+    if not market_price and listing.get("platform") != "tcgplayer":
+        try:
+            from pokefinder.scrapers.ebay import get_last_sold_price
+            title = listing.get("title", "")
+            if title:
+                market_price = await get_last_sold_price(title)
+                market_price_source = "eBay"
+        except Exception:
+            pass
+
+    message = svc.format_deal_message(listing, pref_name, market_price=market_price, market_price_source=market_price_source)
 
     # Append auction context if applicable
     buying_format = listing.get("buying_format")
