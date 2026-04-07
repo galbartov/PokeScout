@@ -108,6 +108,22 @@ export default function Pricing() {
               pointerEvents: 'none',
             }} />
 
+            {/* Coming Soon badge */}
+            <div style={{
+              position: 'absolute', top: 20, right: 20,
+              background: 'rgba(245,183,49,0.15)',
+              border: '1px solid rgba(245,183,49,0.4)',
+              borderRadius: 50,
+              padding: '4px 14px',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              color: 'var(--accent-gold)',
+              letterSpacing: '0.07em',
+              textTransform: 'uppercase',
+            }}>
+              Pro · Coming Soon
+            </div>
+
             {/* Pricing display */}
             <div style={{
               display: 'flex',

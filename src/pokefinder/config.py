@@ -54,7 +54,7 @@ class Settings(BaseSettings):
 
     # Scraping
     scrape_interval_minutes: int = 7
-    free_deals_limit: int = 10
+    free_deals_limit: int = 20
 
     @property
     def is_production(self) -> bool:

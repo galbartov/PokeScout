@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'Subscribed — TCG Scout',
@@ -26,7 +25,7 @@ export default function SubscribeSuccessPage() {
         <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: 32 }}>
           Your TCG Scout Pro subscription is now active. Head back to Telegram — you&apos;ll receive unlimited deal alerts starting now.
         </p>
-        <Link href="https://t.me/PokeScoutBot" style={{
+        <a href="https://t.me/PokeScoutBot" target="_blank" rel="noopener noreferrer" style={{
           display: 'inline-block',
           background: 'var(--accent-teal)',
           color: '#0a0a14',
@@ -37,7 +36,7 @@ export default function SubscribeSuccessPage() {
           fontSize: '0.95rem',
         }}>
           Open TCG Scout on Telegram
-        </Link>
+        </a>
       </div>
     </main>
   );

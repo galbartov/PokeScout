@@ -7,7 +7,7 @@ export const strings = {
     sub: 'TCG Scout monitors eBay & TCGPlayer 24/7 and alerts you on Telegram the moment a card or sealed product drops below your target price.',
     cta: 'Start for Free on Telegram',
     badge: 'Live on eBay & TCGPlayer 24/7',
-    smallPrint: '10 free alerts, no credit card required',
+    smallPrint: '20 free deal notifications, no credit card required',
   },
   how: {
     title: 'How It Works',
@@ -42,12 +42,12 @@ export const strings = {
   pricing: {
     title: 'Simple Pricing',
     badge: 'No credit card required',
-    freeLine: '10 free alerts to get started',
-    thenLine: 'then $9.99 / month for Pro',
+    freeLine: '20 free deal notifications to get started',
+    thenLine: 'then $9.99 / month for Pro — coming soon',
     savingsHeadline: 'Serious collectors save hundreds',
     savingsBody: 'A single good deal on a Charizard ex SIR or an ETB can save you $50-$200. At $9.99/month, TCG Scout pays for itself on day one.',
     features: [
-      'First 10 deal alerts free, no card needed',
+      'First 20 deal alerts free, no card needed',
       'Up to 10 saved alerts on free plan',
       'Up to 50 saved alerts on Pro',
       'Unlimited notifications on Pro',
@@ -58,7 +58,7 @@ export const strings = {
       'Cancel anytime',
     ],
     cta: 'Start for Free on Telegram',
-    note: 'Type /subscribe in the bot to upgrade after your free alerts',
+    note: 'Pro subscriptions are coming soon — start with 20 free deal alerts today',
   },
   faq: {
     title: 'Questions? Answers.',
@@ -69,7 +69,7 @@ export const strings = {
       },
       {
         q: 'How do auction alerts work?',
-        a: 'When an auction\'s current bid is below your target price and it ends within 1 hour, you\'ll get a Telegram alert with a direct link so you can place your bid in time.',
+        a: 'When an auction\'s current bid is below your target price and it ends within 24 hours, you\'ll get a Telegram alert with a direct link so you can place your bid in time.',
       },
       {
         q: 'How quickly will I be alerted after a listing goes up?',
@@ -85,7 +85,7 @@ export const strings = {
       },
       {
         q: 'Is my payment secure?',
-        a: 'Payments are processed by PayPal. We never see or store your card details.',
+        a: 'Payments are processed by Paddle, our Merchant of Record. We never see or store your card details.',
       },
     ],
   },

@@ -282,9 +282,10 @@ async def subscribe_command(update: Update, ctx: ContextTypes.DEFAULT_TYPE) -> N
         await update.message.reply_text(t("already_subscribed", "en", expires=expires))
         return
 
-    url = svc.generate_checkout_url(user)
+    free_left = svc.free_deals_remaining(user)
     await update.message.reply_text(
-        t("subscribe_prompt", "en", checkout_url=url),
+        f"Pro plan is coming soon!\n\nYou currently have {free_left} free deal alert{'s' if free_left != 1 else ''} remaining. "
+        f"We'll notify you here when subscriptions open."
     )
 
 

@@ -108,7 +108,7 @@ async def _handle_message(phone: str, text: str, display_name: str | None) -> st
         if svc.is_subscribed(user):
             return t("already_subscribed", locale, expires=user.get("subscription_expires_at", ""))
         url = svc.generate_checkout_url(user, locale)
-        return t("subscribe_prompt", locale, price=BotService.SUBSCRIPTION_PRICE_ILS, checkout_url=url)
+        return t("subscribe_prompt", locale, price=BotService.SUBSCRIPTION_PRICE_USD, checkout_url=url)
 
     if text_lower in ("help", "עזרה"):
         return t("help_text", locale)

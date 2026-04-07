@@ -88,9 +88,11 @@ class BotService:
         return PRO_PREF_LIMIT if self.is_subscribed(user) else FREE_PREF_LIMIT
 
     async def can_add_preference(self, user: dict) -> tuple[bool, int, int]:
-        """Returns (allowed, current_count, limit). Cap disabled for now."""
+        """Returns (allowed, current_count, limit)."""
         current = len(await queries.get_preferences(self.db, user["id"]))
         limit = self.preference_limit(user)
+        if current >= limit:
+            return False, current, limit
         return True, current, limit
 
     async def add_preference(self, user_id: str, pref_data: dict) -> dict:

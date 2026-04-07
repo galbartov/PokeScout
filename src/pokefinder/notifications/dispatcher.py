@@ -39,7 +39,7 @@ async def dispatch_notification(
     free_left = svc.free_deals_remaining(user)
 
     if not is_sub and free_left <= 0:
-        pass  # Cap disabled for testing
+        return False
 
     # ── Build message ─────────────────────────────────────────────────────
     pref_name = preference.get("name", "?")
