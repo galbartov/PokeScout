@@ -162,10 +162,17 @@ async def match_new_preference(user: dict, pref: dict) -> int:
         return 0
 
     from pokefinder.notifications.dispatcher import dispatch_notification
+
+    _HISTORICAL_CAP = 7
     sent = 0
 
     is_sealed_pref = "sealed" in (pref.get("categories") or [])
     for listing in listings:
+        if sent >= _HISTORICAL_CAP:
+            break
+        # Skip inactive (sold/expired) listings
+        if listing.get("is_active") is False:
+            continue
         if not _category_matches(listing.get("category", "singles"), pref.get("categories") or []):
             continue
         if is_sealed_pref and not _sealed_listing_ok(listing.get("title", "")):
@@ -179,7 +186,8 @@ async def match_new_preference(user: dict, pref: dict) -> int:
         if not _product_matches(listing.get("tcg_product_id"), pref.get("tcg_product_id")):
             continue
         # Skip auction end-time check for historical matches — show them regardless
-        dispatched = await dispatch_notification(db=db, user=user, listing=listing, preference=pref)
+        # bypass_cap=True: historical matches don't count towards free deal quota
+        dispatched = await dispatch_notification(db=db, user=user, listing=listing, preference=pref, bypass_cap=True)
         if dispatched:
             sent += 1
 

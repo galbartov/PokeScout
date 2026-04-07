@@ -21,10 +21,13 @@ async def dispatch_notification(
     user: dict,
     listing: dict,
     preference: dict,
+    bypass_cap: bool = False,
 ) -> bool:
     """
     Send a deal notification to a user for a listing.
     Returns True if at least one channel succeeded.
+    bypass_cap=True skips the free quota check and does not increment the counter
+    (used for historical matches when a preference is first created).
     """
     user_id = user["id"]
     listing_id = listing["id"]
@@ -38,7 +41,7 @@ async def dispatch_notification(
     is_sub = svc.is_subscribed(user)
     free_left = svc.free_deals_remaining(user)
 
-    if not is_sub and free_left <= 0:
+    if not bypass_cap and not is_sub and free_left <= 0:
         return False
 
     # ── Build message ─────────────────────────────────────────────────────
@@ -126,7 +129,7 @@ async def dispatch_notification(
         pass  # Unique constraint violation is fine (race condition)
 
     # ── Increment free deal counter if on trial ───────────────────────────
-    if not is_sub:
+    if not bypass_cap and not is_sub:
         await svc.increment_free_deals(user_id, user.get("free_deals_used", 0))
 
         # If this was the last free deal, send a paywall notice
