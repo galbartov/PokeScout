@@ -121,6 +121,7 @@ async def dispatch_notification(
             "preference_id": preference.get("id"),
             "channel": "+".join(channels),
             "status": "sent",
+            "message_text": message,
         }
         if telegram_message_id is not None:
             notif_record["telegram_message_id"] = telegram_message_id

@@ -16,31 +16,54 @@ logger = logging.getLogger(__name__)
 _BATCH_SIZE = 50
 
 
+_EBAY_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept-Language": "en-US,en;q=0.9",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+}
+
+_SOLD_SIGNALS = [
+    "This listing was ended",
+    "This item is no longer available",
+    "Bid History - Ended",
+    "BidItemNotAvailable",
+    "Item not found",
+    "itm/sold",
+    # title-tag signals (faster — appear in first ~2KB)
+    "<title>404</title>",
+    "Page Not Found",
+]
+
+
 async def _is_ebay_listing_active(url: str) -> bool:
-    """Return False if eBay returns 404 or a 'sold/ended' redirect."""
+    """Return False if the eBay listing has ended or sold."""
     try:
-        async with httpx.AsyncClient(timeout=10, follow_redirects=True) as client:
-            resp = await client.head(url)
+        async with httpx.AsyncClient(
+            timeout=15,
+            follow_redirects=True,
+            headers=_EBAY_HEADERS,
+        ) as client:
+            resp = await client.get(url)
+
+            # Explicit 404
             if resp.status_code == 404:
                 return False
-            # eBay redirects ended auctions to /itm/<id>?... with a different path pattern
-            # or to /e/... — a simple heuristic: check final URL for known sold indicators
+
+            # Check final URL after redirects
             final_url = str(resp.url)
-            if "BidItemNotAvailable" in final_url or "vi/itm/sold" in final_url:
+            if "BidItemNotAvailable" in final_url or "/itm/sold" in final_url:
                 return False
-            # GET the page to check for "Item not found" in body
-            if resp.status_code == 200:
-                get_resp = await client.get(url, headers={"User-Agent": "Mozilla/5.0"})
-                text = get_resp.text[:4000]
-                sold_signals = [
-                    "This listing was ended",
-                    "Item not found",
-                    "This item is no longer available",
-                    "Bid History - Ended",
-                ]
-                for signal in sold_signals:
-                    if signal in text:
-                        return False
+
+            # Scan first 6KB of HTML for sold signals (title + early body)
+            text = resp.text[:6000]
+            for signal in _SOLD_SIGNALS:
+                if signal in text:
+                    return False
+
         return True
     except Exception as e:
         logger.debug("Error checking listing status for %s: %s", url, e)
@@ -63,7 +86,7 @@ async def check_and_update_expired_listings() -> None:
     try:
         res = await (
             db.table("notifications")
-            .select("id, user_id, listing_id, telegram_message_id, status")
+            .select("id, user_id, listing_id, telegram_message_id, status, message_text")
             .eq("status", "sent")
             .not_.is_("telegram_message_id", "null")
             .order("sent_at", desc=True)
@@ -115,46 +138,44 @@ async def check_and_update_expired_listings() -> None:
         if not listing:
             continue
 
-        # Skip listings already marked inactive in DB
-        if listing.get("is_active") is False:
-            continue
-
         url = listing.get("url", "")
         platform = listing.get("platform", "")
 
-        if platform == "ebay":
-            active = await _is_ebay_listing_active(url)
-        else:
-            active = await _is_tcgplayer_listing_active(url)
+        # If already marked inactive in DB, we still need to edit the message
+        # (the DB update may have succeeded but the Telegram edit failed previously)
+        already_inactive = listing.get("is_active") is False
 
-        if active:
-            continue
+        if not already_inactive:
+            if platform == "ebay":
+                active = await _is_ebay_listing_active(url)
+            else:
+                active = await _is_tcgplayer_listing_active(url)
 
-        # Mark listing inactive in DB
-        try:
-            await db.table("listings").update({"is_active": False}).eq("id", listing["id"]).execute()
-        except Exception as e:
-            logger.debug("expiry_checker: failed to mark listing inactive: %s", e)
+            if active:
+                continue
 
-        # Edit the Telegram message
+            # Mark listing inactive in DB
+            try:
+                await db.table("listings").update({"is_active": False}).eq("id", listing["id"]).execute()
+            except Exception as e:
+                logger.debug("expiry_checker: failed to mark listing inactive: %s", e)
+
+        # Edit the Telegram message — append sold notice to original message text
         user = users_by_id.get(notif["user_id"])
         telegram_id = user.get("telegram_id") if user else None
         msg_id = notif.get("telegram_message_id")
 
         if telegram_id and msg_id:
-            title = listing.get("title", "This item")
-            suffix = "\n\n❌ *This listing has ended or sold.*"
-            # We don't have the original message text — just append a note
-            # by editing with a short status update
+            original_text = notif.get("message_text") or listing.get("title", "This item")
+            new_text = original_text + "\n\n❌ *This listing has ended or sold.*"
             try:
                 ok = await edit_deal(
                     telegram_id=telegram_id,
                     message_id=msg_id,
-                    new_text=f"_{title[:80]}_\n{suffix}",
+                    new_text=new_text,
                 )
                 if ok:
                     edited += 1
-                    # Mark notification as expired
                     await db.table("notifications").update({"status": "expired"}).eq("id", notif["id"]).execute()
             except Exception as e:
                 logger.debug("expiry_checker: edit failed for notif %s: %s", notif["id"], e)
